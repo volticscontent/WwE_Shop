@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react'
 import Image from 'next/image'
+import OrderBump from './OrderBump'
 
 // Declare fbq type for Meta Pixel
 declare global {
@@ -222,6 +223,9 @@ const MultiProductPage = () => {
           </div>
         ))}
       </div>
+
+      {/* Order Bump - Kit Complet */}
+      <OrderBump />
 
       {/* Features */}
       <div className="mt-16 bg-gray-50 rounded-lg p-8">
