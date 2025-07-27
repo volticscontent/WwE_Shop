@@ -16,6 +16,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Tour de France 2025 - Maillots Authentiques",
   description: "Découvrez l'édition authentique 2025 du maillot légendaire du Tour de France par Santini. Collection exclusive à prix exceptionnel !",
+  icons: {
+    icon: '/france.png',
+  },
 };
 
 export default function RootLayout({

@@ -60,7 +60,7 @@ const Header = () => {
                 </div>
                 
                 {/* Cart Icon */}
-                <CartIcon onClick={() => setIsCartOpen(true)} className="bg-yellow-400" />
+                <CartIcon onClick={() => setIsCartOpen(true)} />
               </div>
             </div>
           </div>

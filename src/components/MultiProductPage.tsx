@@ -35,6 +35,7 @@ interface Jersey {
 
 const MultiProductPage = () => {
   const [selectedSizes, setSelectedSizes] = useState<{ [key: string]: string }>({})
+  const [selectedJersey, setSelectedJersey] = useState<string>('jersey-01') // Jersey principal em destaque
 
   const jerseys: Jersey[] = [
     {
@@ -112,6 +113,12 @@ const MultiProductPage = () => {
       ...prev,
       [jerseyId]: size
     }))
+    // Selecionar este jersey como o principal
+    setSelectedJersey(jerseyId)
+  }
+
+  const handleJerseySelect = (jerseyId: string) => {
+    setSelectedJersey(jerseyId)
   }
 
   const handleAddToCart = (jersey: Jersey) => {
@@ -153,10 +160,98 @@ const MultiProductPage = () => {
         </div>
       </div>
 
+      {/* Produto Principal em Destaque */}
+      {(() => {
+        const mainJersey = jerseys.find(j => j.id === selectedJersey)
+        if (!mainJersey) return null
+        
+        return (
+          <div className="bg-white rounded-lg shadow-lg p-8 mb-12">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {/* Imagem Principal */}
+              <div className="aspect-square bg-gray-100 rounded-lg relative overflow-hidden">
+                <Image
+                  src={mainJersey.image}
+                  alt={mainJersey.name}
+                  fill
+                  className="object-cover"
+                />
+                <div className="absolute top-4 right-4 bg-red-600 text-white px-3 py-2 rounded-full font-semibold">
+                  -68% OFF
+                </div>
+              </div>
+
+              {/* Informações do Produto Principal */}
+              <div className="flex flex-col justify-center">
+                <h2 className="text-3xl font-bold text-black mb-4">{mainJersey.name}</h2>
+                <p className="text-lg text-gray-600 mb-6">par Santini - {mainJersey.color}</p>
+                
+                {/* Preços */}
+                <div className="flex items-center space-x-4 mb-6">
+                  <span className="text-4xl font-bold text-red-600">47€</span>
+                  <span className="text-xl text-gray-500 line-through">147€</span>
+                </div>
+
+                {/* Seleção de Tamanho */}
+                <div className="mb-6">
+                  <label className="block text-lg font-medium text-gray-900 mb-3">Choisir une taille</label>
+                  <div className="grid grid-cols-4 gap-2">
+                    {mainJersey.variants.map((variant) => (
+                      <button
+                        key={variant.size}
+                        onClick={() => handleSizeSelect(mainJersey.id, variant.size)}
+                        className={`py-3 px-2 font-medium rounded border transition-all ${
+                          selectedSizes[mainJersey.id] === variant.size
+                            ? 'bg-yellow-400 border-yellow-400 text-black'
+                            : 'border-gray-300 text-gray-700 hover:border-yellow-400 hover:bg-yellow-50'
+                        }`}
+                      >
+                        {variant.size}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Botão Principal */}
+                <button
+                  onClick={() => handleAddToCart(mainJersey)}
+                  disabled={!selectedSizes[mainJersey.id]}
+                  className={`w-full py-4 rounded-full font-bold text-xl transition-all ${
+                    selectedSizes[mainJersey.id]
+                      ? 'bg-yellow-400 hover:bg-yellow-500 text-black'
+                      : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                  }`}
+                >
+                  Ajouter au panier - 47€
+                </button>
+
+                {!selectedSizes[mainJersey.id] && (
+                  <p className="text-sm text-red-600 text-center mt-3">
+                    Veuillez sélectionner une taille
+                  </p>
+                )}
+              </div>
+            </div>
+          </div>
+        )
+      })()}
+
+      {/* Titre pour la sélection */}
+      <div className="text-center mb-8">
+        <h3 className="text-2xl font-bold text-black mb-2">Ou choisissez directement votre maillot</h3>
+        <p className="text-gray-600">Cliquez sur n&apos;importe quel maillot pour le voir en grand ci-dessus</p>
+      </div>
+
       {/* Products Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
         {jerseys.map((jersey) => (
-          <div key={jersey.id} className="bg-white rounded-lg shadow-lg overflow-hidden">
+          <div 
+            key={jersey.id} 
+            className={`bg-white rounded-lg shadow-lg overflow-hidden cursor-pointer transition-all hover:shadow-xl ${
+              selectedJersey === jersey.id ? 'ring-4 ring-yellow-400' : ''
+            }`}
+            onClick={() => handleJerseySelect(jersey.id)}
+          >
             {/* Product Image */}
             <div className="aspect-square bg-gray-100 relative">
               <Image
@@ -168,6 +263,11 @@ const MultiProductPage = () => {
               <div className="absolute top-4 right-4 bg-red-600 text-white px-2 py-1 rounded-full text-sm font-semibold">
                 -68%
               </div>
+              {selectedJersey === jersey.id && (
+                <div className="absolute top-4 left-4 bg-yellow-400 text-black px-2 py-1 rounded-full text-sm font-semibold">
+                  Sélectionné
+                </div>
+              )}
             </div>
 
             {/* Product Info */}
@@ -188,7 +288,10 @@ const MultiProductPage = () => {
                   {jersey.variants.map((variant) => (
                     <button
                       key={variant.size}
-                      onClick={() => handleSizeSelect(jersey.id, variant.size)}
+                      onClick={(e) => {
+                        e.stopPropagation() // Evitar que clique no card
+                        handleSizeSelect(jersey.id, variant.size)
+                      }}
                       className={`py-2 px-1 text-xs font-medium rounded border transition-all ${
                         selectedSizes[jersey.id] === variant.size
                           ? 'bg-yellow-400 border-yellow-400 text-black'
@@ -203,7 +306,10 @@ const MultiProductPage = () => {
 
               {/* Add to Cart Button */}
               <button
-                onClick={() => handleAddToCart(jersey)}
+                onClick={(e) => {
+                  e.stopPropagation() // Evitar que clique no card
+                  handleAddToCart(jersey)
+                }}
                 disabled={!selectedSizes[jersey.id]}
                 className={`w-full py-3 rounded-full font-semibold text-lg transition-all ${
                   selectedSizes[jersey.id]
