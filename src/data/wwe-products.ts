@@ -17,6 +17,11 @@ export const johnCenaKit: WWEProductInfo = {
   country_origin: "United States",
   images: [
     {
+      url: "/KIT JOHN.png",
+      alt_text: "John Cena Kit",
+      type: "main"
+    },
+    {
       url: "/public/Men's-Blue-John-Cena-Farewell-Tour-SummerSlam-2025/Men's-Blue-John-Cena-Farewell-Tour-SummerSlam-2025-07.jpg",
       alt_text: "John Cena Blue SummerSlam 2025 Shirt - Angle 2",
       type: "thumbnail_2"
@@ -38,7 +43,7 @@ export const johnCenaKit: WWEProductInfo = {
       name: "John Cena GOAT Kit",
       color: "Multi-Color",
       description: "Complete 3-shirt collection featuring Blue, Green, and Black designs",
-      image: "/public/Men's-Blue-John-Cena-Farewell-Tour-SummerSlam-2025/Men's-Blue-John-Cena-Farewell-Tour-SummerSlam-2025-01.jpg",
+      image: "/KIT JOHN.png",
       shopifyVariants: [
         { size: "S", variantId: "50882187166008", shopifyUrl: "https://nkgzhm-1d.myshopify.com/cart/50882187166008:1?channel=buy_button" },
         { size: "M", variantId: "50882187198776", shopifyUrl: "https://nkgzhm-1d.myshopify.com/cart/50882187198776:1?channel=buy_button" },
@@ -115,9 +120,14 @@ export const codyRhodesKit: WWEProductInfo = {
   country_origin: "United States",
   images: [
     {
+      url: "/KIT CODY.png",
+      alt_text: "Cody Rhodes Kit",
+      type: "main"
+    },
+    {
       url: "/public/Men's-White-Cody-Rhodes-American-Nightmare-Full-Zi/Men's-White-Cody-Rhodes-American-Nightmare-Full-Zi-01.jpg",
       alt_text: "Cody Rhodes American Nightmare Full-Zip Jacket - Main Item",
-      type: "main"
+      type: "thumbnail_2"
     },
     {
       url: "/public/Men's-White-Cody-Rhodes-Stars-&-Stripes-Nightmare-/Men's-White-Cody-Rhodes-Stars-&-Stripes-Nightmare--06.jpg",
@@ -136,7 +146,7 @@ export const codyRhodesKit: WWEProductInfo = {
       name: "Cody Rhodes Complete Kit",
       color: "White/American Theme",
       description: "Complete collection: Full-Zip Jacket + Stars & Stripes Shirt + Americana Skull Cap",
-      image: "/public/Men's-White-Cody-Rhodes-American-Nightmare-Full-Zi/Men's-White-Cody-Rhodes-American-Nightmare-Full-Zi-01.jpg",
+      image: "/KIT CODY.png",
       shopifyVariants: [
         { size: "S", variantId: "50882326167864", shopifyUrl: "https://nkgzhm-1d.myshopify.com/cart/50882326167864:1?channel=buy_button" },
         { size: "M", variantId: "50882326200632", shopifyUrl: "https://nkgzhm-1d.myshopify.com/cart/50882326200632:1?channel=buy_button" },

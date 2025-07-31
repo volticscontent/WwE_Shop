@@ -23,7 +23,7 @@ const Header = () => {
                 
                 {/* Logo */}
                 <div className="logo">
-                  <Link href="/" aria-label="WWE Shop">
+                  <div aria-label="WWE Shop">
                     <div className="w-20 h-20 flex items-center justify-center">
                       <Image 
                         src="/logo.svg" 
@@ -46,7 +46,7 @@ const Header = () => {
                         }}
                       />
                     </div>
-                  </Link>
+                  </div>
                 </div>
               </div>
 
