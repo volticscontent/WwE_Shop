@@ -1,23 +1,7 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import Image from 'next/image'
-import { ProductInfo as ProductInfoType } from '@/types/product'
-import { useCart } from '@/hooks/useCart'
-
-// Declare fbq type for Meta Pixel
-declare global {
-  interface Window {
-    fbq?: (action: string, event: string, params?: {
-      content_name?: string;
-      content_ids?: string[];
-      content_type?: string;
-      value?: number;
-      currency?: string;
-      num_items?: number;
-    }) => void;
-  }
-}
 
 interface VestVariant {
   size: string;
@@ -29,8 +13,6 @@ interface VestVariant {
 interface VestOrderBumpProps {
   selectedMaillotVariant?: string
   selectedMaillotSize?: string
-  product?: ProductInfoType
-  onOpenCart?: () => void
   onVestSelectionChange?: (vestData: {
     isSelected: boolean
     vestVariant?: {
@@ -47,8 +29,6 @@ interface VestOrderBumpProps {
 const VestOrderBump: React.FC<VestOrderBumpProps> = ({
   selectedMaillotVariant,
   selectedMaillotSize,
-  product,
-  onOpenCart,
   onVestSelectionChange
 }) => {
   const [isVestSelected, setIsVestSelected] = useState(false)
@@ -64,43 +44,52 @@ const VestOrderBump: React.FC<VestOrderBumpProps> = ({
   // Mapear nome das cores para francês
   const colorNameMap: { [key: string]: string } = {
     'AMARELO': 'Jaune',
-    'BOLINHAS': 'à Pois',
     'VERDE': 'Vert',
+    'BOLINHAS': 'Polka',
     'BRANCO': 'Blanc'
   }
 
-  // Definir cor e tamanho automaticamente baseado no maillot
+  // Determinar a cor do colete baseado no maillot selecionado
   const selectedVestColor = selectedMaillotVariant ? maillotToVestColorMap[selectedMaillotVariant] : null
   const selectedVestSize = selectedMaillotSize
 
-  // Variantes do colete com todas as opções
-  const vestVariants: { [key: string]: VestVariant[] } = {
+  const vestPrice = 57.90
+
+  const vestColorName = selectedVestColor ? (colorNameMap[selectedVestColor] || selectedVestColor) : 'correspondante'
+
+  const handleVestToggle = (checked: boolean) => {
+    setIsVestSelected(checked)
+    // Apenas marcar/desmarcar - não adicionar ao carrinho aqui
+  }
+
+  // Memoize vestVariants to avoid recreating on every render
+  const vestVariants = React.useMemo((): { [key: string]: VestVariant[] } => ({
     'AMARELO': [
-      { size: 'XS', color: 'AMARELO', shopifyUrl: 'https://nkgzhm-1d.myshopify.com/cart/50857233547576:1?channel=buy_button', variantId: '50857233547576' },
-      { size: 'S', color: 'AMARELO', shopifyUrl: 'https://nkgzhm-1d.myshopify.com/cart/50857233580344:1?channel=buy_button', variantId: '50857233580344' },
-      { size: 'M', color: 'AMARELO', shopifyUrl: 'https://nkgzhm-1d.myshopify.com/cart/50857233613112:1?channel=buy_button', variantId: '50857233613112' },
-      { size: 'L', color: 'AMARELO', shopifyUrl: 'https://nkgzhm-1d.myshopify.com/cart/50857233645880:1?channel=buy_button', variantId: '50857233645880' },
-      { size: 'XL', color: 'AMARELO', shopifyUrl: 'https://nkgzhm-1d.myshopify.com/cart/50857233678648:1?channel=buy_button', variantId: '50857233678648' },
-      { size: '2XL', color: 'AMARELO', shopifyUrl: 'https://nkgzhm-1d.myshopify.com/cart/50857233711416:1?channel=buy_button', variantId: '50857233711416' },
-      { size: '3XL', color: 'AMARELO', shopifyUrl: 'https://nkgzhm-1d.myshopify.com/cart/50857233744184:1?channel=buy_button', variantId: '50857233744184' },
+      { size: 'XS', color: 'AMARELO', shopifyUrl: 'https://nkgzhm-1d.myshopify.com/cart/50857265857848:1?channel=buy_button', variantId: '50857265857848' },
+      { size: 'S', color: 'AMARELO', shopifyUrl: 'https://nkgzhm-1d.myshopify.com/cart/50857265956152:1?channel=buy_button', variantId: '50857265956152' },
+      { size: 'M', color: 'AMARELO', shopifyUrl: 'https://nkgzhm-1d.myshopify.com/cart/50857266054456:1?channel=buy_button', variantId: '50857266054456' },
+      { size: 'L', color: 'AMARELO', shopifyUrl: 'https://nkgzhm-1d.myshopify.com/cart/50857266152760:1?channel=buy_button', variantId: '50857266152760' },
+      { size: 'XL', color: 'AMARELO', shopifyUrl: 'https://nkgzhm-1d.myshopify.com/cart/50857266251064:1?channel=buy_button', variantId: '50857266251064' },
+      { size: '2XL', color: 'AMARELO', shopifyUrl: 'https://nkgzhm-1d.myshopify.com/cart/50857266349368:1?channel=buy_button', variantId: '50857266349368' },
+      { size: '3XL', color: 'AMARELO', shopifyUrl: 'https://nkgzhm-1d.myshopify.com/cart/50857266447672:1?channel=buy_button', variantId: '50857266447672' },
     ],
     'VERDE': [
-      { size: 'XS', color: 'VERDE', shopifyUrl: 'https://nkgzhm-1d.myshopify.com/cart/50857268674872:1?channel=buy_button', variantId: '50857268674872' },
-      { size: 'S', color: 'VERDE', shopifyUrl: 'https://nkgzhm-1d.myshopify.com/cart/50857268773176:1?channel=buy_button', variantId: '50857268773176' },
-      { size: 'M', color: 'VERDE', shopifyUrl: 'https://nkgzhm-1d.myshopify.com/cart/50857268871480:1?channel=buy_button', variantId: '50857268871480' },
-      { size: 'L', color: 'VERDE', shopifyUrl: 'https://nkgzhm-1d.myshopify.com/cart/50857268969784:1?channel=buy_button', variantId: '50857268969784' },
-      { size: 'XL', color: 'VERDE', shopifyUrl: 'https://nkgzhm-1d.myshopify.com/cart/50857269068088:1?channel=buy_button', variantId: '50857269068088' },
-      { size: '2XL', color: 'VERDE', shopifyUrl: 'https://nkgzhm-1d.myshopify.com/cart/50857269166392:1?channel=buy_button', variantId: '50857269166392' },
-      { size: '3XL', color: 'VERDE', shopifyUrl: 'https://nkgzhm-1d.myshopify.com/cart/50857269264696:1?channel=buy_button', variantId: '50857269264696' },
+      { size: 'XS', color: 'VERDE', shopifyUrl: 'https://nkgzhm-1d.myshopify.com/cart/50857266545976:1?channel=buy_button', variantId: '50857266545976' },
+      { size: 'S', color: 'VERDE', shopifyUrl: 'https://nkgzhm-1d.myshopify.com/cart/50857266644280:1?channel=buy_button', variantId: '50857266644280' },
+      { size: 'M', color: 'VERDE', shopifyUrl: 'https://nkgzhm-1d.myshopify.com/cart/50857266742584:1?channel=buy_button', variantId: '50857266742584' },
+      { size: 'L', color: 'VERDE', shopifyUrl: 'https://nkgzhm-1d.myshopify.com/cart/50857266840888:1?channel=buy_button', variantId: '50857266840888' },
+      { size: 'XL', color: 'VERDE', shopifyUrl: 'https://nkgzhm-1d.myshopify.com/cart/50857266939192:1?channel=buy_button', variantId: '50857266939192' },
+      { size: '2XL', color: 'VERDE', shopifyUrl: 'https://nkgzhm-1d.myshopify.com/cart/50857267037496:1?channel=buy_button', variantId: '50857267037496' },
+      { size: '3XL', color: 'VERDE', shopifyUrl: 'https://nkgzhm-1d.myshopify.com/cart/50857267135800:1?channel=buy_button', variantId: '50857267135800' },
     ],
     'BOLINHAS': [
-      { size: 'XS', color: 'BOLINHAS', shopifyUrl: 'https://nkgzhm-1d.myshopify.com/cart/50857268707640:1?channel=buy_button', variantId: '50857268707640' },
-      { size: 'S', color: 'BOLINHAS', shopifyUrl: 'https://nkgzhm-1d.myshopify.com/cart/50857268805944:1?channel=buy_button', variantId: '50857268805944' },
-      { size: 'M', color: 'BOLINHAS', shopifyUrl: 'https://nkgzhm-1d.myshopify.com/cart/50857268904248:1?channel=buy_button', variantId: '50857268904248' },
-      { size: 'L', color: 'BOLINHAS', shopifyUrl: 'https://nkgzhm-1d.myshopify.com/cart/50857269002552:1?channel=buy_button', variantId: '50857269002552' },
-      { size: 'XL', color: 'BOLINHAS', shopifyUrl: 'https://nkgzhm-1d.myshopify.com/cart/50857269100856:1?channel=buy_button', variantId: '50857269100856' },
-      { size: '2XL', color: 'BOLINHAS', shopifyUrl: 'https://nkgzhm-1d.myshopify.com/cart/50857269199160:1?channel=buy_button', variantId: '50857269199160' },
-      { size: '3XL', color: 'BOLINHAS', shopifyUrl: 'https://nkgzhm-1d.myshopify.com/cart/50857269297464:1?channel=buy_button', variantId: '50857269297464' },
+      { size: 'XS', color: 'BOLINHAS', shopifyUrl: 'https://nkgzhm-1d.myshopify.com/cart/50857267234104:1?channel=buy_button', variantId: '50857267234104' },
+      { size: 'S', color: 'BOLINHAS', shopifyUrl: 'https://nkgzhm-1d.myshopify.com/cart/50857267332408:1?channel=buy_button', variantId: '50857267332408' },
+      { size: 'M', color: 'BOLINHAS', shopifyUrl: 'https://nkgzhm-1d.myshopify.com/cart/50857267430712:1?channel=buy_button', variantId: '50857267430712' },
+      { size: 'L', color: 'BOLINHAS', shopifyUrl: 'https://nkgzhm-1d.myshopify.com/cart/50857267529016:1?channel=buy_button', variantId: '50857267529016' },
+      { size: 'XL', color: 'BOLINHAS', shopifyUrl: 'https://nkgzhm-1d.myshopify.com/cart/50857267627320:1?channel=buy_button', variantId: '50857267627320' },
+      { size: '2XL', color: 'BOLINHAS', shopifyUrl: 'https://nkgzhm-1d.myshopify.com/cart/50857267725624:1?channel=buy_button', variantId: '50857267725624' },
+      { size: '3XL', color: 'BOLINHAS', shopifyUrl: 'https://nkgzhm-1d.myshopify.com/cart/50857267823928:1?channel=buy_button', variantId: '50857267823928' },
     ],
     'BRANCO': [
       { size: 'XS', color: 'BRANCO', shopifyUrl: 'https://nkgzhm-1d.myshopify.com/cart/50857268740408:1?channel=buy_button', variantId: '50857268740408' },
@@ -111,25 +100,13 @@ const VestOrderBump: React.FC<VestOrderBumpProps> = ({
       { size: '2XL', color: 'BRANCO', shopifyUrl: 'https://nkgzhm-1d.myshopify.com/cart/50857269231928:1?channel=buy_button', variantId: '50857269231928' },
       { size: '3XL', color: 'BRANCO', shopifyUrl: 'https://nkgzhm-1d.myshopify.com/cart/50857269330232:1?channel=buy_button', variantId: '50857269330232' },
     ]
-  }
-
-  const vestPrice = 57.90
-  const maillotPrice = 47.00
-
-  const { addItem } = useCart()
-
-  const vestColorName = selectedVestColor ? (colorNameMap[selectedVestColor] || selectedVestColor) : 'correspondante'
-
-  const handleVestToggle = (checked: boolean) => {
-    setIsVestSelected(checked)
-    // Apenas marcar/desmarcar - não adicionar ao carrinho aqui
-  }
+  }), [])
 
   // Notificar o componente pai sobre mudanças na seleção
   React.useEffect(() => {
     if (onVestSelectionChange) {
       const vestVariant = selectedVestColor && selectedVestSize 
-        ? vestVariants[selectedVestColor]?.find(v => v.size === selectedVestSize)
+        ? vestVariants[selectedVestColor]?.find((v: VestVariant) => v.size === selectedVestSize)
         : undefined
 
       onVestSelectionChange({
@@ -144,7 +121,7 @@ const VestOrderBump: React.FC<VestOrderBumpProps> = ({
         vestPrice
       })
     }
-  }, [isVestSelected, selectedVestColor, selectedVestSize, vestColorName, onVestSelectionChange])
+  }, [isVestSelected, selectedVestColor, selectedVestSize, vestColorName, onVestSelectionChange, vestVariants, vestPrice])
 
   // Não mostrar se não há maillot selecionado
   if (!selectedMaillotVariant) return null

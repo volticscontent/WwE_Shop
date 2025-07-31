@@ -5,38 +5,13 @@ import { ChevronDown } from 'lucide-react'
 import SizeSelector from './SizeSelector'
 import { ProductInfo as ProductInfoType } from '@/types/product'
 import Image from 'next/image'
-import VestOrderBump from './VestOrderBump'
 import { useCart } from '@/hooks/useCart'
 
 interface ProductInfoProps {
   product: ProductInfoType
-  onVariantChange?: (variantId: string) => void
   selectedVariant?: string
+  onVariantChange?: (variant: string) => void
   onOpenCart?: () => void
-}
-
-// Declare fbq type for Meta Pixel
-declare global {
-  interface Window {
-    fbq?: (action: string, event: string, params?: {
-      content_name?: string;
-      content_ids?: string[];
-      content_type?: string;
-      value?: number;
-      currency?: string;
-      num_items?: number;
-    }) => void;
-    ttq?: {
-      track: (event: string, params?: {
-        content_name?: string;
-        content_id?: string;
-        content_type?: string;
-        value?: number;
-        currency?: string;
-        quantity?: number;
-      }) => void;
-    };
-  }
 }
 
 const ProductInfo: React.FC<ProductInfoProps> = ({ product, onVariantChange, selectedVariant: externalSelectedVariant, onOpenCart }) => {
@@ -44,17 +19,6 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product, onVariantChange, sel
   const [internalSelectedVariant, setInternalSelectedVariant] = useState<string>('jersey-01') // Default to yellow jersey
   const [quantity, setQuantity] = useState(1)
   const [expandedSections, setExpandedSections] = useState<string[]>(['shipping'])
-  const [vestSelection, setVestSelection] = useState<{
-    isSelected: boolean
-    vestVariant?: {
-      variantId: string
-      shopifyUrl: string
-    }
-    vestColor?: string
-    vestColorName?: string
-    vestSize?: string
-    vestPrice: number
-  } | null>(null)
 
   // Use external selectedVariant if provided, otherwise use internal state
   const selectedVariant = externalSelectedVariant !== undefined ? externalSelectedVariant : internalSelectedVariant
@@ -83,81 +47,8 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product, onVariantChange, sel
     }
   }
 
-  // Function to handle add to cart and trigger Meta Pixel event
+  // Handle add to cart with Meta Pixel tracking
   const handleAddToCart = () => {
-    if (!selectedSize || !selectedVariant) return
-
-    const variant = product.variants?.find(v => v.id === selectedVariant)
-    if (!variant) return
-
-    const sizeVariant = variant.shopifyVariants.find(sv => sv.size === selectedSize)
-    if (!sizeVariant) return
-
-    const productPrice = parseFloat(product.pricing.discount_price.replace(/[^0-9.,]/g, '').replace(',', '.'))
-
-    // Adicionar o produto principal
-    addItem({
-      variantId: sizeVariant.variantId,
-      productName: product.title,
-      variantName: variant.name,
-      size: selectedSize,
-      price: productPrice,
-      quantity: quantity,
-      image: variant.image,
-      shopifyUrl: sizeVariant.shopifyUrl
-    })
-
-    // Adicionar o vest se selecionado e válido
-    if (vestSelection?.isSelected && vestSelection.vestVariant && vestSelection.vestSize) {
-      addItem({
-        variantId: vestSelection.vestVariant.variantId,
-        productName: 'Barboteuse Cycliste',
-        variantName: `Barboteuse ${vestSelection.vestColorName}`,
-        size: vestSelection.vestSize,
-        color: vestSelection.vestColorName,
-        price: vestSelection.vestPrice,
-        quantity: 1,
-        image: `/orderbumps/macacoes/${vestSelection.vestColor === 'AMARELO' ? 'jaune.png' : 
-          vestSelection.vestColor === 'VERDE' ? 'vert.png' : 
-          vestSelection.vestColor === 'BOLINHAS' ? 'polka.png' : 'blanc.webp'}`,
-        shopifyUrl: vestSelection.vestVariant.shopifyUrl
-      })
-
-      // Trigger Meta Pixel event para bundle
-      if (typeof window !== 'undefined' && window.fbq) {
-        window.fbq('track', 'AddToCart', {
-          content_name: `Bundle: ${product.title} + Barboteuse Cycliste`,
-          content_ids: [sizeVariant.variantId, vestSelection.vestVariant.variantId],
-          content_type: 'product_group',
-          value: productPrice * quantity + vestSelection.vestPrice,
-          currency: 'EUR',
-          num_items: quantity + 1
-        })
-      }
-    } else {
-      // Trigger Meta Pixel event para produto único
-      if (typeof window !== 'undefined' && window.fbq) {
-        window.fbq('track', 'AddToCart', {
-          content_name: product.title,
-          content_ids: [sizeVariant.variantId],
-          content_type: 'product',
-          value: productPrice * quantity,
-          currency: 'EUR',
-          num_items: quantity
-        })
-      }
-    }
-
-    // Abrir carrinho automaticamente
-    if (onOpenCart) {
-      setTimeout(() => {
-        onOpenCart()
-      }, 300)
-    }
-  }
-
-  // Function to handle direct checkout to Shopify
-  const handleDirectCheckout = () => {
     if (!selectedSize || !selectedVariant) return
 
     const variant = product.variants?.find(v => v.id === selectedVariant)
@@ -166,54 +57,55 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product, onVariantChange, sel
     const shopifyVariant = variant.shopifyVariants.find(sv => sv.size === selectedSize)
     if (!shopifyVariant) return
 
-    // Trigger Meta Pixel InitiateCheckout event
+    // Ensure quantity is at least 1
+    const finalQuantity = Math.max(1, quantity)
+
+    // Add to cart
+    addItem({
+      variantId: shopifyVariant.variantId,
+      productName: product.title,
+      variantName: variant.name,
+      size: selectedSize,
+      color: variant.color,
+      price: parseFloat(product.pricing.discount_price.replace(/[^0-9.,]/g, '').replace(',', '.')),
+      quantity: finalQuantity,
+      image: variant.image,
+      shopifyUrl: shopifyVariant.shopifyUrl
+    })
+
+    // Trigger Meta Pixel event
     if (typeof window !== 'undefined' && window.fbq) {
-      window.fbq('track', 'InitiateCheckout', {
-        content_name: `${product.title} - ${variant.name}`,
+      window.fbq('track', 'TDF_AddToCart', {
+        content_name: `TDF: ${product.title}`,
         content_ids: [shopifyVariant.variantId],
-        content_type: 'product',
-        value: parseFloat(product.pricing.discount_price.replace(/[^0-9.,]/g, '').replace(',', '.')),
+        content_type: 'tdf_variant',
+        value: parseFloat(product.pricing.discount_price.replace(/[^0-9.,]/g, '').replace(',', '.')) * finalQuantity,
         currency: 'EUR',
-        num_items: quantity
+        num_items: finalQuantity
       })
     }
 
-    // Redirect to Shopify cart
-    window.open(shopifyVariant.shopifyUrl, '_blank')
-
-    console.log('Direct checkout:', {
-      product: product.title,
-      variant: variant.name,
-      size: selectedSize,
-      quantity: quantity,
-      shopifyUrl: shopifyVariant.shopifyUrl
-    })
+    // Open cart after a short delay to show the item was added
+    if (onOpenCart) {
+      setTimeout(() => {
+        onOpenCart()
+      }, 300)
+    }
   }
 
   const { addItem } = useCart()
 
   return (
     <div className="space-y-6">
-      {/* Product Title */}
-      <div>
-        <h1 className="text-[18px] font-semibold text-black mb-2 mx-3">
-          {product.title}
-        </h1>
-        <div className="flex items-center space-x-2 mx-3">
-          <span className="text-green-600 text-sm font-medium">
-            {product.availability}
-          </span>
-        </div>
-      </div>
 
       {/* Pricing */}
       <div className="space-y-2 mx-3">
         <div className="flex items-center space-x-3">
-          <span className="text-[19px] font-bold text-red-600">
+          <span className="text-[19px] font-bold text-[#444444]">
             {product.pricing.discount_price}
           </span>
           <span className="text-sm text-gray-600">
-            avec promotion: <span className="font-bold text-red-600">{product.pricing.discount_code}</span>
+            avec promotion: <span className="font-bold text-[#444444]">{product.pricing.discount_code}</span>
           </span>
           <span className="text-lg text-gray-500 line-through">
             {product.pricing.regular_price}
@@ -230,9 +122,9 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product, onVariantChange, sel
               <button
                 key={variant.id}
                 onClick={() => handleVariantChange(variant.id)}
-                className={`flex flex-col items-center p-2 rounded-lg border-2 transition-all min-w-[70px] ${
+                className={`flex flex-col items-center p-2 rounded-lg border-[0.1px] transition-all min-w-[70px] ${
                   selectedVariant === variant.id
-                    ? 'border-[#ff0] shadow-md bg-white'
+                    ? 'border-[#52525286] shadow-md bg-white'
                     : 'border-gray-200 bg-white hover:border-[#ff0]'
                 }`}
               >
@@ -246,7 +138,7 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product, onVariantChange, sel
                   />
                 </div>
                 <span className={`text-xs font-medium text-center leading-tight ${
-                  selectedVariant === variant.id ? 'text-[#beb30f]' : 'text-gray-700'
+                  selectedVariant === variant.id ? 'text-[#525252]' : 'text-[#2b2b2b]'
                 }`}>
                   {variant.name}
                 </span>
@@ -305,18 +197,9 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product, onVariantChange, sel
           </p>
         )}
       </div>
-      
-      {/* Vest Order Bump */}
-      <VestOrderBump
-        selectedMaillotVariant={selectedVariant}
-        selectedMaillotSize={selectedSize}
-        product={product}
-        onOpenCart={onOpenCart}
-        onVestSelectionChange={setVestSelection}
-      />
-      
-      {/* Product Details Sections */}
-      <div className="">
+       
+       {/* Product Details Sections */}
+       <div className="">
         {/* Shipping */}
         <div className="border border-gray-200 rounded">
           <button

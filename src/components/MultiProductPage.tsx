@@ -4,20 +4,6 @@ import React, { useState } from 'react'
 import Image from 'next/image'
 import OrderBump from './OrderBump'
 
-// Declare fbq type for Meta Pixel
-declare global {
-  interface Window {
-    fbq?: (action: string, event: string, params?: {
-      content_name?: string;
-      content_ids?: string[];
-      content_type?: string;
-      value?: number;
-      currency?: string;
-      num_items?: number;
-    }) => void;
-  }
-}
-
 interface JerseyVariant {
   size: string;
   shopifyUrl: string;

@@ -49,7 +49,7 @@ const SizeSelector: React.FC<SizeSelectorProps> = ({
                 radio size-selector-button rectangle cursor-pointer
                 h-12 border border-gray-300 rounded flex items-center justify-center font-medium transition-all
                 ${isSelected 
-                  ? 'bg-[#ff0] border-[#ff0] text-black selected' 
+                  ? 'bg-[#000000] border-[#000000] text-white selected' 
                   : isUnavailable 
                     ? 'bg-white border-gray-300 text-gray-400 cursor-not-allowed unavailable' 
                     : 'bg-white border-gray-300 hover:border-yellow-400 hover:bg-yellow-50 available text-black'

@@ -6,7 +6,7 @@ import Breadcrumb from '@/components/Breadcrumb'
 import ProductImageGallery from '@/components/ProductImageGallery'
 import ProductInfo from '@/components/ProductInfo'
 import Cart from '@/components/Cart'
-import { ProductInfo as ProductInfoType, ProductImage } from '@/types/product'
+import { ProductInfo as ProductInfoType } from '@/types/product'
 
 // Product data with bundle variants and Shopify integration
 const mockProduct: ProductInfoType = {
@@ -23,7 +23,6 @@ const mockProduct: ProductInfoType = {
   category: "Maillots Authentiques",
   sizes: ["XS", "S", "M", "L", "XL", "2XL", "3XL", "4XL"],
   country_origin: "Italie",
-  originalUrl: "https://store2.letour.com/fr/tour-de-france/tour-de-france-2025-authentic-jersey-by-santini-yellow/t-21155588+p-913314123688324+z-9-4203877325?_ref=p-DLP:m-GRID:i-r0c2:po-2",
   variants: [
     {
       id: "jersey-01",
@@ -123,12 +122,6 @@ export default function Home() {
   const [selectedVariant, setSelectedVariant] = useState<string>('jersey-01')
   const [isCartOpen, setIsCartOpen] = useState(false)
 
-  // Handle variant change from ProductInfo
-  const handleVariantChange = (variantId: string) => {
-    setSelectedVariant(variantId)
-    setSelectedImageIndex(0) // Reset to first image when variant changes
-  }
-
   // Handle direct image selection from carousel
   const handleImageSelect = (index: number) => {
     setSelectedImageIndex(index)
@@ -160,10 +153,20 @@ export default function Home() {
     <div className="min-h-screen bg-gray-50">
       <Header />
       
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
         <Breadcrumb items={breadcrumbItems} />
         
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
+        <div>
+        <h1 className="text-[18px] font-semibold text-[#111111] mb-2 mx-3">
+          {mockProduct.title}
+        </h1>
+        <div className="flex items-center space-x-2 mx-3">
+          <span className="text-green-600 text-sm font-medium">
+            {mockProduct.availability}
+          </span>
+        </div>
+      </div>
           {/* Left Column - Images */}
           <div className="space-y-4">
             <ProductImageGallery 

@@ -100,12 +100,24 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
     // Trigger Meta Pixel event
     if (typeof window !== 'undefined' && window.fbq) {
-      window.fbq('track', 'InitiateCheckout', {
-        content_name: 'Cart Checkout',
+      // Detectar tipo de produto no carrinho
+      const hasWWEProducts = items.some(item => 
+        item.productName.includes('John Cena') || 
+        item.productName.includes('Cody Rhodes') ||
+        item.variantId.startsWith('50882')
+      )
+      
+      const eventName = hasWWEProducts ? 'WWE_InitiateCheckout' : 'TDF_InitiateCheckout'
+      const contentType = hasWWEProducts ? 'wwe_checkout' : 'tdf_checkout'
+      const currency = hasWWEProducts ? 'USD' : 'EUR'
+      const contentName = hasWWEProducts ? 'WWE Cart Checkout' : 'TDF Cart Checkout'
+
+      window.fbq('track', eventName, {
+        content_name: contentName,
         content_ids: items.map(item => item.variantId),
-        content_type: 'product_group',
+        content_type: contentType,
         value: totalPrice,
-        currency: 'EUR',
+        currency: currency,
         num_items: totalItems
       })
     }

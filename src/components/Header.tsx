@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { Search, ShoppingCart, User, ChevronDown } from 'lucide-react'
+import { Search, User } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import CartIcon from './CartIcon'
@@ -9,158 +9,162 @@ import Cart from './Cart'
 
 const Header = () => {
   const [isCartOpen, setIsCartOpen] = useState(false)
-  
-  const topBarLinks = [
-    { label: 'LeTour.com', href: '#', external: true },
-    { label: 'Suivre ma commande', href: '#' },
-    { label: 'Aide', href: '#' },
-    { label: 'Mon Compte', href: '#' },
-  ]
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
 
   return (
     <>
       <header className="w-full">
-        {/* Top Bar */}
-        <div className="bg-white border-b border-gray-200 hidden lg:block">
+        {/* Main Header Section */}
+        <div className="bg-[#f0f0f0] text-black border-b border-gray-200">
           <div className="container mx-auto px-4">
-            <div className="flex items-center justify-between py-2">
-              {/* Sign up button */}
-              <button className="bg-yellow-400 hover:bg-yellow-500 text-black px-4 py-2 rounded text-sm font-medium">
-                SIGN UP & SAVE 10%
-              </button>
-              
-              {/* Top bar links */}
-              <div className="flex items-center space-x-6">
-                {topBarLinks.map((link, index) => (
-                  <a 
-                    key={index}
-                    href={link.href}
-                    className="text-sm text-gray-700 hover:text-black"
-                    target={link.external ? '_blank' : undefined}
-                    rel={link.external ? 'noopener noreferrer' : undefined}
-                  >
-                    {link.label}
-                  </a>
-                ))}
+            <div className="main-section flex items-center justify-between pt-2">
+              {/* Left Container */}
+              <div className="left-container flex items-center">
                 
-                {/* Language selector */}
-                <div className="relative">
-                  <button className="flex items-center space-x-1 text-sm text-gray-700 hover:text-black">
-                    <span>Language</span>
-                    <ChevronDown className="w-3 h-3" />
-                  </button>
+                {/* Logo */}
+                <div className="logo">
+                  <Link href="/" aria-label="WWE Shop">
+                    <div className="w-20 h-20 flex items-center justify-center">
+                      <Image 
+                        src="/logo.svg" 
+                        alt="WWE Shop" 
+                        width={100} 
+                        height={100}
+                        className="max-w-full max-h-full object-contain"
+                        priority
+                        onError={(e) => {
+                          console.log('Logo failed to load:', e);
+                          // Hide the image and show text fallback
+                          e.currentTarget.style.display = 'none';
+                          const parent = e.currentTarget.parentElement;
+                          if (parent && !parent.querySelector('.logo-fallback')) {
+                            const fallback = document.createElement('span');
+                            fallback.className = 'logo-fallback text-xl font-bold text-red-600';
+                            fallback.textContent = 'WWE';
+                            parent.appendChild(fallback);
+                          }
+                        }}
+                      />
+                    </div>
+                  </Link>
                 </div>
-                
-                {/* Currency selector */}
-                <div className="relative">
-                  <button className="flex items-center space-x-1 text-sm text-gray-700 hover:text-black">
-                    <span>EUR €</span>
-                    <ChevronDown className="w-3 h-3" />
-                  </button>
-                </div>
+              </div>
+
+              {/* Right Container */}
+              <div className="right-container flex items-center">
+                {/* Account Icon */}
+                <Link href="/account" aria-label="Account" className="p-1 hover:bg-gray-100 rounded-lg">
+                  <User className="w-9 h-9 text-black" fill="currentColor" />
+                </Link>
                 
                 {/* Cart Icon */}
-                <CartIcon onClick={() => setIsCartOpen(true)} />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Main Header */}
-        <div className="bg-black text-white">
-          <div className="container mx-auto px-4">
-            <div className="flex items-center justify-between py-4">
-              {/* Logo */}
-              <div className="flex items-center">
-                <Link href="/" className="text-white">
-                  <div className="w-48 h-12 flex items-center justify-center">
-                    <Image 
-                      src="/product_images/logo.svg" 
-                      alt="Tour de France" 
-                      width={192} 
-                      height={48}
-                      className="max-w-full max-h-full object-contain"
-                      priority
-                      onError={(e) => {
-                        console.log('Logo failed to load:', e);
-                        // Hide the image and show text fallback
-                        e.currentTarget.style.display = 'none';
-                        const parent = e.currentTarget.parentElement;
-                        if (parent && !parent.querySelector('.logo-fallback')) {
-                          const fallback = document.createElement('span');
-                          fallback.className = 'logo-fallback text-xl font-bold text-yellow-400';
-                          fallback.textContent = 'TOUR DE FRANCE';
-                          parent.appendChild(fallback);
-                        }
-                      }}
-                    />
-                  </div>
-                </Link>
-              </div>
-
-              {/* Search Bar - Desktop */}
-              <div className="hidden lg:flex flex-1 max-w-md mx-8">
-                <div className="relative w-full">
-                  <input
-                    type="text"
-                    placeholder="What can we help you find?"
-                    className="w-full px-4 py-2 rounded-l-lg text-black border-none outline-none"
-                  />
-                  <button className="bg-white text-black px-4 py-2 rounded-r-lg hover:bg-gray-100">
-                    <Search className="w-5 h-5" />
-                  </button>
+                <div className="cart-icon">
+                  <CartIcon onClick={() => setIsCartOpen(true)} />
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
 
-              {/* Mobile Menu Button & Icons */}
-              <div className="flex items-center space-x-4 lg:hidden">
-                <button>
-                  <User className="w-6 h-6" />
-                </button>
-                <CartIcon onClick={() => setIsCartOpen(true)} />
+        {/* Navigation Menu */}
+        <nav className="top-nav-light-container bg-black text-white font-bold">
+          <ul className="top-nav-component flex items-center justify-center space-x-8 py-3" role="menu">
+            <li role="menuitem" className="top-nav-item">
+              <Link href="/superstars" className="top-nav-item-link text-white hover:text-gray-300 font-medium">
+                Superstars
+              </Link>
+            </li>
+            <li role="menuitem" className="top-nav-item">
+              <Link href="/title-belts" className="top-nav-item-link text-white hover:text-gray-300 font-medium">
+                Title Belts
+              </Link>
+            </li>
+            <li role="menuitem" className="top-nav-item">
+              <Link href="/t-shirts" className="top-nav-item-link text-white hover:text-gray-300 font-medium">
+                T-Shirts
+              </Link>
+            </li>
+            <li role="menuitem" className="top-nav-item">
+              <Link href="/more" className="top-nav-item-link text-white hover:text-gray-300 font-medium">
+                More
+              </Link>
+            </li>
+            <li role="menuitem" className="top-nav-item">
+              <button className="top-nav-item-link text-white hover:text-gray-300 p-1">
+                <Search className="w-5 h-5" />
+              </button>
+            </li>
+          </ul>
+        </nav>
+
+        <div className="layout-row bg-[#f0f0f0] border-b border-gray-300">
+          <div className="pl-sliver">
+            <div className="sliver">
+              <div className="sl-container border-bottom py-2 px-4">
+                <div className="flex items-center col text-black text-[15px] justify-center text-sm space-x-2">
+                  <div className="flex items-center space-x-1">
+                    <span>SAVE 70% OFF -</span>
+                    <span className="font-bold ml-1">limited 25/08</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Navigation */}
-        <nav className="bg-[#FFFF00]">
-          <div className="container mx-auto px-4">
-            <div className="flex items-center justify-between py-3">
-              {/* Left side navigation items */}
-              <div className="flex items-center space-x-2">
-                {/* Équipes */}
-                <a href="#" className="text-black hover:bg-yellow-500 pr-3 py-2 rounded transition-colors font-bold">
-                  Équipes
-                </a>
-                
-                {/* Maillot Jaune */}
-                <a href="#" className="text-black hover:bg-yellow-500 py-2 rounded transition-colors font-bold">
-                  Maillot Jaune
-                </a>
-                
-                
-                {/* Homme */}
-                <a href="#" className="text-black hover:bg-yellow-500 px-3 py-2 rounded transition-colors font-bold">
-                  Homme
-                </a>
-                
-                {/* Plus */}
-                <a href="#" className="text-black hover:bg-yellow-500 px-3 py-2 rounded transition-colors font-bold">
-                  Plus
-                </a>
-              </div>
-
-              {/* Right side search icon */}
-              <div className="flex items-center">
-                <button className="text-black hover:bg-yellow-500 p-2 rounded transition-colors">
-                  <Search className="w-5 h-5" />
-                </button>
+        {/* Free Shipping Banner */}
+        <div className="layout-row bg-white border-b border-gray-300">
+          <div className="pl-sliver">
+            <div className="sliver">
+              <div className="sl-container border-bottom py-2 px-4">
+                <div className="flex items-center text-[#444444] text-[15px] justify-center text-sm space-x-2">
+                  <div className="sl-logo-message flex items-center space-x-2">
+                    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm5-18v4h3V3h-3z"/>
+                    </svg>
+                    <span>You have a $100 discount</span>
+                  </div>
+                  <div className="flex items-center space-x-1">
+                    <span>Quiz valid until</span>
+                    <span className="font-bold">WWE25</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-        </nav>
+        </div>
       </header>
+
+      {/* Mobile Menu Overlay */}
+      {isMenuOpen && (
+        <div className="fixed inset-0 z-50 bg-black bg-opacity-50">
+          <div className="bg-white w-64 h-full p-4">
+            <button 
+              onClick={() => setIsMenuOpen(false)}
+              className="mb-4 text-xl"
+            >
+              ×
+            </button>
+            <nav className="space-y-4">
+              <Link href="/superstars" className="block py-2 hover:bg-gray-100 rounded">
+                Superstars
+              </Link>
+              <Link href="/championships" className="block py-2 hover:bg-gray-100 rounded">
+                Championships
+              </Link>
+              <Link href="/men" className="block py-2 hover:bg-gray-100 rounded">
+                Men
+              </Link>
+              <Link href="/women" className="block py-2 hover:bg-gray-100 rounded">
+                Women
+              </Link>
+              <Link href="/more" className="block py-2 hover:bg-gray-100 rounded">
+                More
+              </Link>
+            </nav>
+          </div>
+        </div>
+      )}
 
       {/* Cart Sidebar */}
       <Cart isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />

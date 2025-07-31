@@ -1,21 +1,6 @@
 'use client'
 
 import React, { useState } from 'react'
-import Image from 'next/image'
-
-// Declare fbq type for Meta Pixel
-declare global {
-  interface Window {
-    fbq?: (action: string, event: string, params?: {
-      content_name?: string;
-      content_ids?: string[];
-      content_type?: string;
-      value?: number;
-      currency?: string;
-      num_items?: number;
-    }) => void;
-  }
-}
 
 interface OrderBumpVariant {
   size: string;

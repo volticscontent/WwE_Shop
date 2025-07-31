@@ -32,7 +32,10 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({
 
   // Filtrar apenas imagens do produto (main e thumbnails)
   const productImages = images.filter(img => 
-    img.type === 'main' || img.type.startsWith('thumbnail_') || img.type.startsWith('angle_')
+    img.type === 'main' || 
+    img.type.startsWith('thumbnail_') || 
+    img.type.startsWith('angle_') ||
+    img.type.startsWith('variant_')
   )
 
   const currentImage = productImages[selectedImageIndex] || productImages[0]
@@ -62,14 +65,14 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({
 
       {/* Thumbnails - Original Tour de France Style */}
       {productImages.length > 1 && (
-        <div className="flex space-x-2 justify-start overflow-x-auto scrollbar-hide pb-2">
+        <div className="flex space-x-2 justify-center overflow-x-auto scrollbar-hide pb-2">
           {productImages.map((image, index) => (
             <button
               key={index}
               onClick={() => handleImageSelect(index)}
-              className={`flex-shrink-0 w-16 h-16 border-2 rounded-md overflow-hidden transition-all hover:border-yellow-400 ${
+              className={`flex-shrink-0 w-17 h-17 rounded-md overflow-hidden transition-all ${
                 selectedImageIndex === index 
-                  ? 'border-yellow-400 ring-2 ring-yellow-200' 
+                  ? 'border-gray-400 ring-1 ring-gray-200' 
                   : 'border-gray-300'
               }`}
             >

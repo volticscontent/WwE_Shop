@@ -1,8 +1,8 @@
 'use client'
 
-import React, { useState } from 'react'
+import React from 'react'
 import Image from 'next/image'
-import { X, Minus, Plus, ShoppingCart, Trash2, Gift, ChevronRight } from 'lucide-react'
+import { X, Minus, Plus, ShoppingCart, Trash2, ChevronRight } from 'lucide-react'
 import { useCart } from '@/hooks/useCart'
 
 interface CartProps {
@@ -11,9 +11,9 @@ interface CartProps {
 }
 
 const Cart: React.FC<CartProps> = ({ isOpen, onClose }) => {
-  const { items, removeItem, updateQuantity, clearCart, totalItems, totalPrice, checkout, addItem } = useCart()
+  const { items, removeItem, updateQuantity, totalItems, totalPrice, checkout, addItem } = useCart()
 
-  // Ofertas de brindes
+  // Ofertas de brindes (Tour de France)
   const bonusOffers = [
     {
       id: 'bone',
@@ -37,7 +37,110 @@ const Cart: React.FC<CartProps> = ({ isOpen, onClose }) => {
     }
   ]
 
-  const handleAddBonusOffer = (offer: typeof bonusOffers[0]) => {
+  // Order Bumps WWE (John Cena)
+  const wweJohnCenaOrderBumps = [
+    {
+      id: 'john-cena-caps',
+      name: 'John Cena "Never Give Up" Cap Duo – Official Farewell Tour Hats (2-for-1 Limited Drop)',
+      price: 29.99,
+      originalPrice: 49.99,
+      image: '/public/Men\'s-White-Green-John-Cena-Farewell-Tour-SummerSl/Men\'s-White-Green-John-Cena-Farewell-Tour-SummerSl-01.jpg',
+      variantId: '50882236416312',
+      shopifyUrl: 'https://nkgzhm-1d.myshopify.com/cart/50882236416312:1?channel=buy_button',
+      discount: '40% OFF'
+    },
+    {
+      id: 'john-cena-towel-set',
+      name: 'Red/White John Cena Farewell Tour SummerSlam 2025 Towel & Sweatband Set',
+      price: 19.99,
+      originalPrice: 39.90,
+      image: '/public/Red-White-John-Cena-Farewell-Tour-SummerSlam-2025-/Red-White-John-Cena-Farewell-Tour-SummerSlam-2025--01.jpg',
+      variantId: '50882269217080',
+      shopifyUrl: 'https://nkgzhm-1d.myshopify.com/cart/50882269217080:1?channel=buy_button',
+      discount: '50% OFF'
+    },
+    {
+      id: 'john-cena-backpack',
+      name: 'Loungefly John Cena Farewell Tour 2025 Mini Backpack',
+      price: 47.49,
+      originalPrice: 89.99,
+      image: '/public/Loungefly-John-Cena-Farewell-Tour-2025-Mini-Backpa/Loungefly-John-Cena-Farewell-Tour-2025-Mini-Backpa-01.jpg',
+      variantId: '50882275443000',
+      shopifyUrl: 'https://nkgzhm-1d.myshopify.com/cart/50882275443000:1?channel=buy_button',
+      discount: '47% OFF'
+    }
+  ]
+
+  // Order Bumps WWE (Cody Rhodes)
+  const wweCodyRhodesOrderBumps = [
+    {
+      id: 'cody-rhodes-mini-backpack',
+      name: 'Loungefly Cody Rhodes American Nightmare Mini Backpack',
+      price: 49.49,
+      originalPrice: 119.90,
+      image: '/public/Loungefly-Cody-Rhodes-American-Nightmare-Mini-Back/Loungefly-Cody-Rhodes-American-Nightmare-Mini-Back-01.jpg',
+      variantId: '50882338685240',
+      shopifyUrl: 'https://nkgzhm-1d.myshopify.com/cart/50882338685240:1?channel=buy_button',
+      discount: '59% OFF'
+    },
+    {
+      id: 'cody-rhodes-windbreaker-jacket',
+      name: 'Men\'s White Cody Rhodes American Nightmare Full-Zip Windbreaker Jacket',
+      price: 49.99,
+      originalPrice: 149.99,
+      image: '/public/Men\'s-White-Cody-Rhodes-Stars-and-Stripes-Windbrea/Men\'s-White-Cody-Rhodes-Stars-and-Stripes-Windbrea-01.jpg',
+      variantId: '50882351333688',
+      shopifyUrl: 'https://nkgzhm-1d.myshopify.com/cart/50882351333688:1?channel=buy_button',
+      discount: '67% OFF'
+    },
+    {
+      id: 'cody-rhodes-stainless-steel-can',
+      name: 'IGLOO Cody Rhodes 16oz. Stainless Steel Can',
+      price: 19.99,
+      originalPrice: 44.99,
+      image: '/public/IGLOO-Cody-Rhodes-16oz.-Stainless-Steel-Can/IGLOO-Cody-Rhodes-16oz.-Stainless-Steel-Can-01.jpg',
+      variantId: '50882365030712',
+      shopifyUrl: 'https://nkgzhm-1d.myshopify.com/cart/50882365030712:1?channel=buy_button',
+      discount: '56% OFF'
+    }
+  ]
+
+  // Detectar se há produtos WWE no carrinho
+  const hasJohnCenaProducts = items.some(item => 
+    item.productName.includes('John Cena') ||
+    item.productName.includes('Kit John Cena') ||
+    item.variantId.startsWith('50882187') // John Cena Kit variant IDs
+  )
+
+  const hasCodyRhodesProducts = items.some(item =>
+    item.productName.includes('Cody Rhodes') ||
+    item.productName.includes('Kit Cody Rhodes') ||
+    item.variantId.startsWith('50882326') // Cody Rhodes Kit variant IDs
+  )
+
+  // Detectar se há produtos Tour de France no carrinho  
+  const hasTourDeFranceProducts = items.some(item =>
+    item.productName.includes('Maillot') ||
+    item.productName.includes('Tour de France') ||
+    item.variantId.startsWith('50836')
+  )
+
+  // Selecionar ofertas baseado nos produtos no carrinho
+  let currentOffers: typeof bonusOffers = []
+  let isWWEProduct = false
+
+  if (hasJohnCenaProducts) {
+    currentOffers = wweJohnCenaOrderBumps
+    isWWEProduct = true
+  } else if (hasCodyRhodesProducts) {
+    currentOffers = wweCodyRhodesOrderBumps
+    isWWEProduct = true
+  } else if (hasTourDeFranceProducts) {
+    currentOffers = bonusOffers
+    isWWEProduct = false
+  }
+
+  const handleAddBonusOffer = (offer: typeof currentOffers[0]) => {
     addItem({
       variantId: offer.variantId,
       productName: offer.name,
@@ -48,17 +151,33 @@ const Cart: React.FC<CartProps> = ({ isOpen, onClose }) => {
       image: offer.image,
       shopifyUrl: offer.shopifyUrl
     })
+
+    // Trigger Meta Pixel event específico para order bumps
+    if (typeof window !== 'undefined' && window.fbq) {
+      const eventName = isWWEProduct ? 'WWE_AddToCart' : 'TDF_AddToCart'
+      const contentType = isWWEProduct ? 'wwe_order_bump' : 'tdf_order_bump'
+      const currency = isWWEProduct ? 'USD' : 'EUR'
+      
+      window.fbq('track', eventName, {
+        content_name: `${isWWEProduct ? 'WWE' : 'TDF'} Order Bump: ${offer.name}`,
+        content_ids: [offer.variantId],
+        content_type: contentType,
+        value: offer.price,
+        currency: currency,
+        num_items: 1
+      })
+    }
   }
 
   const isOfferInCart = (offerId: string) => {
-    const offerData = bonusOffers.find(offer => offer.id === offerId)
+    const offerData = currentOffers.find(offer => offer.id === offerId)
     if (!offerData) return false
     
     return items.some(item => item.variantId === offerData.variantId)
   }
 
   // Filtrar ofertas que ainda não estão no carrinho
-  const availableOffers = bonusOffers.filter(offer => !isOfferInCart(offer.id))
+  const availableOffers = currentOffers.filter(offer => !isOfferInCart(offer.id))
 
   if (!isOpen) return null
 
@@ -74,17 +193,17 @@ const Cart: React.FC<CartProps> = ({ isOpen, onClose }) => {
       <div className="absolute right-0 top-0 h-full w-full max-w-sm bg-white shadow-2xl transform transition-transform">
         <div className="flex flex-col h-full">
           {/* Header melhorado */}
-          <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-gradient-to-r from-yellow-400 to-yellow-500">
+          <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-gradient-to-r from-black to-black">
             <div className="flex items-center space-x-2">
-              <ShoppingCart className="w-5 h-5 text-black" />
-              <h2 className="text-lg font-bold text-black">
-                Panier ({totalItems})
+              <ShoppingCart className="w-5 h-5 text-white" />
+              <h2 className="text-lg font-bold text-white">
+                {isWWEProduct ? `Cart (${totalItems})` : `Panier (${totalItems})`}
               </h2>
             </div>
             <button
               onClick={onClose}
               className="p-2 hover:bg-yellow-600 rounded-full transition-colors"
-              title="Fermer le panier"
+              title={isWWEProduct ? "Close cart" : "Fermer le panier"}
             >
               <X className="w-5 h-5 text-black" />
             </button>
@@ -97,7 +216,7 @@ const Cart: React.FC<CartProps> = ({ isOpen, onClose }) => {
               className="text-xs text-gray-600 hover:text-gray-800 flex items-center"
             >
               <ChevronRight className="w-3 h-3 mr-1" />
-              Continuer mes achats
+              {isWWEProduct ? "Continue shopping" : "Continuer mes achats"}
             </button>
           </div>
 
@@ -108,8 +227,12 @@ const Cart: React.FC<CartProps> = ({ isOpen, onClose }) => {
                 <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
                   <ShoppingCart className="w-8 h-8 text-gray-400" />
                 </div>
-                <p className="text-lg font-medium mb-2">Votre panier est vide</p>
-                <p className="text-sm text-center">Découvrez nos produits authentiques Tour de France</p>
+                <p className="text-lg font-medium mb-2">
+                  {isWWEProduct ? "Your cart is empty" : "Votre panier est vide"}
+                </p>
+                <p className="text-sm text-center">
+                  {isWWEProduct ? "Discover our authentic WWE merchandise" : "Découvrez nos produits authentiques Tour de France"}
+                </p>
               </div>
             ) : (
               <div className="p-4 space-y-3">
@@ -153,17 +276,17 @@ const Cart: React.FC<CartProps> = ({ isOpen, onClose }) => {
                             <button
                               onClick={() => updateQuantity(item.variantId, item.quantity - 1)}
                               className="w-7 h-7 rounded-full bg-gray-300 hover:bg-gray-400 flex items-center justify-center transition-colors"
-                              title="Diminuer la quantité"
+                              title={isWWEProduct ? "Decrease quantity" : "Diminuer la quantité"}
                             >
                               <Minus className="w-4 h-4 text-gray-700" />
                             </button>
-                            <span className="text-sm font-semibold w-8 text-center bg-gray-100 rounded px-2 py-1">
+                            <span className="text-sm font-semibold text-black w-8 text-center bg-gray-100 rounded px-2 py-1">
                               {item.quantity}
                             </span>
                             <button
                               onClick={() => updateQuantity(item.variantId, item.quantity + 1)}
                               className="w-7 h-7 rounded-full bg-gray-300 hover:bg-gray-400 flex items-center justify-center transition-colors"
-                              title="Augmenter la quantité"
+                              title={isWWEProduct ? "Increase quantity" : "Augmenter la quantité"}
                             >
                               <Plus className="w-4 h-4 text-gray-700" />
                             </button>
@@ -171,12 +294,12 @@ const Cart: React.FC<CartProps> = ({ isOpen, onClose }) => {
                           
                           <div className="flex items-center space-x-2">
                             <span className="text-sm font-bold text-gray-900">
-                              {(item.price * item.quantity).toFixed(2)}€
+                              {isWWEProduct ? `$${(item.price * item.quantity).toFixed(2)}` : `${(item.price * item.quantity).toFixed(2)}€`}
                             </span>
                             <button
                               onClick={() => removeItem(item.variantId)}
                               className="w-7 h-7 hover:bg-red-100 rounded-full text-red-500 flex items-center justify-center transition-colors"
-                              title="Supprimer du panier"
+                              title={isWWEProduct ? "Remove from cart" : "Supprimer du panier"}
                             >
                               <Trash2 className="w-4 h-4" />
                             </button>
@@ -192,12 +315,9 @@ const Cart: React.FC<CartProps> = ({ isOpen, onClose }) => {
             {/* Seção de Ofertas Especiais - só mostra se tem ofertas disponíveis */}
             {availableOffers.length > 0 && (
               <div className="border-t border-gray-200 p-4">
-                <h3 className="text-lg font-semibold mb-4 text-gray-800">
-                  🎁 Offres Spéciales
-                </h3>
                 <div className="space-y-3">
                   {availableOffers.map((offer) => (
-                    <div key={offer.id} className="flex items-center space-x-3 p-3 bg-gradient-to-r from-green-50 to-green-100 rounded-lg border border-green-200">
+                    <div key={offer.id} className="flex items-center space-x-3 p-3 bg-gradient-to-r from-red-50 to-gray-100 rounded-lg border border-red-200">
                       <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center overflow-hidden">
                         <Image
                           src={offer.image}
@@ -221,8 +341,12 @@ const Cart: React.FC<CartProps> = ({ isOpen, onClose }) => {
                       <div className="flex-1">
                         <h4 className="font-medium text-gray-900 text-sm">{offer.name}</h4>
                         <div className="flex items-center space-x-2">
-                          <span className="text-green-600 font-bold text-sm">{offer.price.toFixed(2)}€</span>
-                          <span className="text-gray-400 line-through text-xs">{offer.originalPrice.toFixed(2)}€</span>
+                          <span className="text-green-600 font-bold text-sm">
+                            {isWWEProduct ? `$${offer.price.toFixed(2)}` : `${offer.price.toFixed(2)}€`}
+                          </span>
+                          <span className="text-gray-400 line-through text-xs">
+                            {isWWEProduct ? `$${offer.originalPrice.toFixed(2)}` : `${offer.originalPrice.toFixed(2)}€`}
+                          </span>
                           <span className="bg-red-500 text-white px-1 py-0.5 rounded text-xs font-semibold">
                             {offer.discount}
                           </span>
@@ -231,9 +355,9 @@ const Cart: React.FC<CartProps> = ({ isOpen, onClose }) => {
                       
                       <button
                         onClick={() => handleAddBonusOffer(offer)}
-                        className="bg-green-500 hover:bg-green-600 text-white px-3 py-1.5 rounded text-sm font-medium transition-colors"
+                        className="bg-black hover:bg-gray-800 text-white px-3 py-1.5 rounded text-sm font-medium transition-colors"
                       >
-                        Ajouter
+                        Add
                       </button>
                     </div>
                   ))}
@@ -248,9 +372,11 @@ const Cart: React.FC<CartProps> = ({ isOpen, onClose }) => {
               <div className="p-4 space-y-4">
                 {/* Total */}
                 <div className="flex justify-between items-center py-2 border-t border-gray-100">
-                  <span className="text-lg font-bold text-gray-900">Total:</span>
+                  <span className="text-lg font-bold text-gray-900">
+                    {isWWEProduct ? "Total:" : "Total:"}
+                  </span>
                   <span className="text-xl font-bold text-gray-900">
-                    {totalPrice.toFixed(2)}€
+                    {isWWEProduct ? `$${totalPrice.toFixed(2)}` : `${totalPrice.toFixed(2)}€`}
                   </span>
                 </div>
 
@@ -258,18 +384,22 @@ const Cart: React.FC<CartProps> = ({ isOpen, onClose }) => {
                 <div className="space-y-2">
                   <button
                     onClick={checkout}
-                    className="w-full bg-gradient-to-r from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600 text-black font-bold py-3 px-4 rounded-full transition-all duration-200 shadow-lg hover:shadow-xl"
+                    className="w-full bg-gradient-to-br from-white to-[#fffafa] hover:bg-red-500 border border-black hover:border-red-500 text-black font-bold py-3 px-4 rounded-full transition-all duration-200 shadow-lg hover:shadow-xl"
                   >
-                    Finaliser ({totalItems} article{totalItems > 1 ? 's' : ''})
+                    {isWWEProduct 
+                      ? `Checkout (${totalItems} item${totalItems > 1 ? 's' : ''})`
+                      : `Finaliser (${totalItems} article${totalItems > 1 ? 's' : ''})`
+                    }
                   </button>
-                  
-                
                 </div>
 
                 {/* Info */}
                 <div className="text-center">
                   <p className="text-xs text-gray-600">
-                    Redirection sécurisée vers Shopify
+                    {isWWEProduct 
+                      ? "Secure redirect to Shopify"
+                      : "Redirection sécurisée vers Shopify"
+                    }
                   </p>
                 </div>
               </div>

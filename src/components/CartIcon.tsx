@@ -15,12 +15,12 @@ const CartIcon: React.FC<CartIconProps> = ({ onClick, className = "" }) => {
   return (
     <button
       onClick={onClick}
-      className={`relative p-2 bg-yellow-transparent rounded-lg transition-colors border-2 border-black shadow-lg ${className}`}
+      className={`relative p-2 bg-yellow-transparent rounded-lg transition-colors ${className}`}
       title={`Panier (${totalItems} article${totalItems !== 1 ? 's' : ''})`}
     >
-      <ShoppingCart className="w-6 h-6 text-white" />
+      <ShoppingCart className="w-8 h-8 text-black" fill="currentColor" />
       {totalItems > 0 && (
-        <span className="absolute -top-0.5 -right-0.5 bg-red-500 text-white text-xs font-bold rounded-full min-w-[18px] h-5 flex items-center justify-center border-2 border-white shadow-lg z-10">
+        <span className="absolute -top-0.5 -right-0.5 bg-red-500 text-white text-xs font-bold rounded-full min-w-[18px] h-5 flex items-center justify-center shadow-lg z-10">
           {totalItems > 99 ? '99+' : totalItems}
         </span>
       )}
