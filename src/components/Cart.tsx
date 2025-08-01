@@ -1,17 +1,43 @@
 'use client'
 
-import React from 'react'
+import React, { useState } from 'react'
 import Image from 'next/image'
 import { X, Minus, Plus, ShoppingCart, Trash2, ChevronRight } from 'lucide-react'
 import { useCart } from '@/hooks/useCart'
+import OrderBumpSizeModal from './OrderBumpSizeModal'
 
 interface CartProps {
   isOpen: boolean
   onClose: () => void
 }
 
+// Interface para order bumps com variantes
+interface OrderBumpWithVariants {
+  id: string
+  name: string
+  description?: string
+  price: number
+  originalPrice: number
+  image: string
+  variantId: string
+  shopifyUrl: string
+  discount: string
+  category?: 'accessories' | 'bundle'
+  hasVariants?: boolean
+  variants?: Array<{
+    size: string
+    variantId: string
+    shopifyUrl: string
+  }>
+  images?: string[]
+}
+
 const Cart: React.FC<CartProps> = ({ isOpen, onClose }) => {
   const { items, removeItem, updateQuantity, totalItems, totalPrice, checkout, addItem } = useCart()
+  
+  // Estado para o modal de seleção de tamanho
+  const [sizeModalOpen, setSizeModalOpen] = useState(false)
+  const [selectedOrderBump, setSelectedOrderBump] = useState<OrderBumpWithVariants | null>(null)
 
   // Ofertas de brindes (Tour de France)
   const bonusOffers = [
@@ -47,12 +73,12 @@ const Cart: React.FC<CartProps> = ({ isOpen, onClose }) => {
       image: '/public/Men\'s-White-Green-John-Cena-Farewell-Tour-SummerSl/Men\'s-White-Green-John-Cena-Farewell-Tour-SummerSl-01.jpg',
       variantId: '50882236416312',
       shopifyUrl: 'https://nkgzhm-1d.myshopify.com/cart/50882236416312:1?channel=buy_button',
-      discount: '40% OFF'
+      discount: '50% OFF'
     },
     {
       id: 'john-cena-towel-set',
       name: 'Red/White John Cena Farewell Tour SummerSlam 2025 Towel & Sweatband Set',
-      price: 19.99,
+      price: 14.99,
       originalPrice: 39.90,
       image: '/public/Red-White-John-Cena-Farewell-Tour-SummerSlam-2025-/Red-White-John-Cena-Farewell-Tour-SummerSlam-2025--01.jpg',
       variantId: '50882269217080',
@@ -63,11 +89,11 @@ const Cart: React.FC<CartProps> = ({ isOpen, onClose }) => {
       id: 'john-cena-backpack',
       name: 'Loungefly John Cena Farewell Tour 2025 Mini Backpack',
       price: 47.49,
-      originalPrice: 89.99,
+      originalPrice: 99.99,
       image: '/public/Loungefly-John-Cena-Farewell-Tour-2025-Mini-Backpa/Loungefly-John-Cena-Farewell-Tour-2025-Mini-Backpa-01.jpg',
       variantId: '50882275443000',
       shopifyUrl: 'https://nkgzhm-1d.myshopify.com/cart/50882275443000:1?channel=buy_button',
-      discount: '47% OFF'
+      discount: '60% OFF'
     }
   ]
 
@@ -76,29 +102,43 @@ const Cart: React.FC<CartProps> = ({ isOpen, onClose }) => {
     {
       id: 'cody-rhodes-mini-backpack',
       name: 'Loungefly Cody Rhodes American Nightmare Mini Backpack',
-      price: 49.49,
+      price: 47.49,
       originalPrice: 119.90,
-      image: '/public/Loungefly-Cody-Rhodes-American-Nightmare-Mini-Back/Loungefly-Cody-Rhodes-American-Nightmare-Mini-Back-01.jpg',
+      image: '/public/Loungefly-Cody-Rhodes-American-Nightmare-Mini-Back/Loungefly-Cody-Rhodes-American-Nightmare-Mini-Back-05.jpg',
       variantId: '50882338685240',
       shopifyUrl: 'https://nkgzhm-1d.myshopify.com/cart/50882338685240:1?channel=buy_button',
-      discount: '59% OFF'
+      discount: '50% OFF'
     },
     {
       id: 'cody-rhodes-windbreaker-jacket',
       name: 'Men\'s White Cody Rhodes American Nightmare Full-Zip Windbreaker Jacket',
       price: 49.99,
-      originalPrice: 149.99,
-      image: '/public/Men\'s-White-Cody-Rhodes-Stars-and-Stripes-Windbrea/Men\'s-White-Cody-Rhodes-Stars-and-Stripes-Windbrea-01.jpg',
+      originalPrice: 110.99,
+      image: '/public/Men\'s-White-Cody-Rhodes-American-Nightmare-Full-Zi/Men\'s-White-Cody-Rhodes-American-Nightmare-Full-Zi-01.jpg',
       variantId: '50882351333688',
       shopifyUrl: 'https://nkgzhm-1d.myshopify.com/cart/50882351333688:1?channel=buy_button',
-      discount: '67% OFF'
+      discount: '50% OFF',
+      hasVariants: true,
+      variants: [
+        { size: "S", variantId: "50882351333688", shopifyUrl: "https://nkgzhm-1d.myshopify.com/cart/50882351333688:1?channel=buy_button" },
+        { size: "M", variantId: "50882351366456", shopifyUrl: "https://nkgzhm-1d.myshopify.com/cart/50882351366456:1?channel=buy_button" },
+        { size: "L", variantId: "50882351399224", shopifyUrl: "https://nkgzhm-1d.myshopify.com/cart/50882351399224:1?channel=buy_button" },
+        { size: "XL", variantId: "50882351431992", shopifyUrl: "https://nkgzhm-1d.myshopify.com/cart/50882351431992:1?channel=buy_button" },
+        { size: "2XL", variantId: "50882351464760", shopifyUrl: "https://nkgzhm-1d.myshopify.com/cart/50882351464760:1?channel=buy_button" },
+        { size: "3XL", variantId: "50882351497528", shopifyUrl: "https://nkgzhm-1d.myshopify.com/cart/50882351497528:1?channel=buy_button" }
+      ],
+      images: [
+        "/public/Men's-White-Cody-Rhodes-American-Nightmare-Full-Zi/Men's-White-Cody-Rhodes-American-Nightmare-Full-Zi-03.jpg",
+        "/public/Men's-White-Cody-Rhodes-American-Nightmare-Full-Zi/Men's-White-Cody-Rhodes-American-Nightmare-Full-Zi-04.jpg",
+        "/public/Men's-White-Cody-Rhodes-American-Nightmare-Full-Zi/Men's-White-Cody-Rhodes-American-Nightmare-Full-Zi-06.jpg"
+      ]
     },
     {
       id: 'cody-rhodes-stainless-steel-can',
       name: 'IGLOO Cody Rhodes 16oz. Stainless Steel Can',
-      price: 19.99,
-      originalPrice: 44.99,
-      image: '/public/IGLOO-Cody-Rhodes-16oz.-Stainless-Steel-Can/IGLOO-Cody-Rhodes-16oz.-Stainless-Steel-Can-01.jpg',
+      price: 14.99,
+      originalPrice: 34.99,
+      image: '/public/IGLOO-Cody-Rhodes-16oz.-Stainless-Steel-Can/IGLOO-Cody-Rhodes-16oz.-Stainless-Steel-Can-05.jpg',
       variantId: '50882365030712',
       shopifyUrl: 'https://nkgzhm-1d.myshopify.com/cart/50882365030712:1?channel=buy_button',
       discount: '56% OFF'
@@ -140,24 +180,25 @@ const Cart: React.FC<CartProps> = ({ isOpen, onClose }) => {
     isWWEProduct = false
   }
 
-  const handleAddBonusOffer = (offer: typeof currentOffers[0]) => {
+  const handleAddBonusOffer = (offer: OrderBumpWithVariants) => {
     addItem({
       variantId: offer.variantId,
       productName: offer.name,
       variantName: offer.name,
       size: 'Unique',
       price: offer.price,
+      originalPrice: offer.originalPrice,
       quantity: 1,
       image: offer.image,
       shopifyUrl: offer.shopifyUrl
     })
 
-    // Trigger Meta Pixel event específico para order bumps
+    // Trigger Meta Pixel e TikTok events específicos para order bumps
+    const eventName = isWWEProduct ? 'WWE_AddToCart' : 'TDF_AddToCart'
+    const contentType = isWWEProduct ? 'wwe_order_bump' : 'tdf_order_bump'
+    const currency = isWWEProduct ? 'USD' : 'EUR'
+    
     if (typeof window !== 'undefined' && window.fbq) {
-      const eventName = isWWEProduct ? 'WWE_AddToCart' : 'TDF_AddToCart'
-      const contentType = isWWEProduct ? 'wwe_order_bump' : 'tdf_order_bump'
-      const currency = isWWEProduct ? 'USD' : 'EUR'
-      
       window.fbq('track', eventName, {
         content_name: `${isWWEProduct ? 'WWE' : 'TDF'} Order Bump: ${offer.name}`,
         content_ids: [offer.variantId],
@@ -166,6 +207,74 @@ const Cart: React.FC<CartProps> = ({ isOpen, onClose }) => {
         currency: currency,
         num_items: 1
       })
+    }
+
+    // Trigger TikTok event
+    if (typeof window !== 'undefined' && window.ttq) {
+      const wrestlerName = isWWEProduct ? (hasJohnCenaProducts ? 'John_Cena' : 'Cody_Rhodes') : 'TDF'
+      const eventName = `${wrestlerName}_AddToCart`
+      
+      window.ttq.track(eventName, {
+        content_name: `${isWWEProduct ? 'WWE' : 'TDF'} Order Bump: ${offer.name}`,
+        content_id: offer.variantId,
+        content_type: 'product',
+        value: offer.price,
+        currency: currency,
+        quantity: 1
+      })
+    }
+  }
+
+  // Função para abrir modal de seleção de tamanho
+  const handleOrderBumpClick = (orderBump: OrderBumpWithVariants) => {
+    setSelectedOrderBump(orderBump)
+    setSizeModalOpen(true)
+  }
+
+  // Função para adicionar ao carrinho com tamanho selecionado
+  const handleSizeModalAddToCart = (variantId: string, size: string, shopifyUrl: string) => {
+    if (selectedOrderBump) {
+      addItem({
+        variantId: variantId,
+        productName: selectedOrderBump.name,
+        variantName: size === 'One Size' ? selectedOrderBump.name : `${selectedOrderBump.name} - ${size}`,
+        size: size,
+        price: selectedOrderBump.price,
+        originalPrice: selectedOrderBump.originalPrice,
+        quantity: 1,
+        image: selectedOrderBump.image,
+        shopifyUrl: shopifyUrl
+      })
+
+      // Trigger Meta Pixel e TikTok events
+      if (typeof window !== 'undefined' && window.fbq) {
+        window.fbq('track', 'WWE_AddToCart', {
+          content_name: size === 'One Size' ? selectedOrderBump.name : `${selectedOrderBump.name} - ${size}`,
+          content_ids: [variantId],
+          content_type: 'wwe_order_bump',
+          value: selectedOrderBump.price,
+          currency: 'USD',
+          num_items: 1
+        })
+      }
+
+      // Trigger TikTok event
+      if (typeof window !== 'undefined' && window.ttq) {
+        const wrestlerName = hasCodyRhodesProducts ? 'Cody_Rhodes' : (hasJohnCenaProducts ? 'John_Cena' : 'WWE')
+        const eventName = `${wrestlerName}_AddToCart`
+        
+        window.ttq.track(eventName, {
+          content_name: size === 'One Size' ? selectedOrderBump.name : `${selectedOrderBump.name} - ${size}`,
+          content_id: variantId,
+          content_type: 'product',
+          value: selectedOrderBump.price,
+          currency: 'USD',
+          quantity: 1
+        })
+      }
+
+      setSizeModalOpen(false)
+      setSelectedOrderBump(null)
     }
   }
 
@@ -185,7 +294,7 @@ const Cart: React.FC<CartProps> = ({ isOpen, onClose }) => {
     <div className="fixed inset-0 z-50 overflow-hidden">
       {/* Overlay com click para fechar */}
       <div 
-        className="absolute inset-0 bg-black bg-opacity-50 transition-opacity" 
+        className="absolute inset-0 bg-opacity-50 transition-opacity" 
         onClick={onClose}
       />
       
@@ -197,7 +306,7 @@ const Cart: React.FC<CartProps> = ({ isOpen, onClose }) => {
             <div className="flex items-center space-x-2">
               <ShoppingCart className="w-5 h-5 text-white" />
               <h2 className="text-lg font-bold text-white">
-                {isWWEProduct ? `Cart (${totalItems})` : `Panier (${totalItems})`}
+                {isWWEProduct ? `Cart ${totalItems}` : `Panier ${totalItems}`}
               </h2>
             </div>
             <button
@@ -235,12 +344,12 @@ const Cart: React.FC<CartProps> = ({ isOpen, onClose }) => {
                 </p>
               </div>
             ) : (
-              <div className="p-4 space-y-3">
+              <div className="p-4 pb-40 space-y-3">
                 {items.map((item) => (
-                  <div key={item.variantId} className="bg-gray-50 rounded-lg p-3 border border-gray-100">
+                  <div key={item.variantId} className="bg-gray-100 rounded-lg p-3 border border-gray-100">
                     <div className="flex items-start space-x-3">
                       {/* Product Image */}
-                      <div className="w-12 h-12 bg-gray-200 rounded-lg overflow-hidden flex-shrink-0">
+                      <div className="w-20 h-20 bg-gray-200 rounded-lg overflow-hidden flex-shrink-0">
                         <Image
                           src={item.image}
                           alt={item.productName}
@@ -272,7 +381,7 @@ const Cart: React.FC<CartProps> = ({ isOpen, onClose }) => {
                         
                         {/* Quantity Controls */}
                         <div className="flex items-center justify-between">
-                          <div className="flex items-center space-x-2">
+                          <div className="flex items-center space-x-1">
                             <button
                               onClick={() => updateQuantity(item.variantId, item.quantity - 1)}
                               className="w-7 h-7 rounded-full bg-gray-300 hover:bg-gray-400 flex items-center justify-center transition-colors"
@@ -292,7 +401,10 @@ const Cart: React.FC<CartProps> = ({ isOpen, onClose }) => {
                             </button>
                           </div>
                           
-                          <div className="flex items-center space-x-2">
+                          <div className="flex items-center space-x-1">
+                            <span className='text-sm font-semibold text-gray-400 line-through'>
+                              {isWWEProduct ? `$${(item.originalPrice || item.price * 1.5 * item.quantity).toFixed(2)}` : `${(item.originalPrice || item.price * 1.5 * item.quantity).toFixed(2)}€`}
+                            </span>
                             <span className="text-sm font-bold text-gray-900">
                               {isWWEProduct ? `$${(item.price * item.quantity).toFixed(2)}` : `${(item.price * item.quantity).toFixed(2)}€`}
                             </span>
@@ -317,7 +429,7 @@ const Cart: React.FC<CartProps> = ({ isOpen, onClose }) => {
               <div className="border-t border-gray-200 p-4">
                 <div className="space-y-3">
                   {availableOffers.map((offer) => (
-                    <div key={offer.id} className="flex items-center space-x-3 p-3 bg-gradient-to-r from-red-50 to-gray-100 rounded-lg border border-red-200">
+                    <div key={offer.id} className="flex items-center space-x-3 p-3 bg-gradient-to-r from-[#fff9f9] via-[#ffffff] to-[#fffcfc] rounded-lg border-[1px] border-black/50">
                       <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center overflow-hidden">
                         <Image
                           src={offer.image}
@@ -347,17 +459,21 @@ const Cart: React.FC<CartProps> = ({ isOpen, onClose }) => {
                           <span className="text-gray-400 line-through text-xs">
                             {isWWEProduct ? `$${offer.originalPrice.toFixed(2)}` : `${offer.originalPrice.toFixed(2)}€`}
                           </span>
-                          <span className="bg-red-500 text-white px-1 py-0.5 rounded text-xs font-semibold">
-                            {offer.discount}
-                          </span>
                         </div>
                       </div>
                       
                       <button
-                        onClick={() => handleAddBonusOffer(offer)}
-                        className="bg-black hover:bg-gray-800 text-white px-3 py-1.5 rounded text-sm font-medium transition-colors"
+                        onClick={() => {
+                          const typedOffer = offer as OrderBumpWithVariants
+                          if (typedOffer.hasVariants) {
+                            handleOrderBumpClick(typedOffer)
+                          } else {
+                            handleAddBonusOffer(typedOffer)
+                          }
+                        }}
+                        className="bg-white text-black border border-black/50 px-3 py-1.5 rounded text-sm font-medium transition-colors"
                       >
-                        Add
+                        {(offer as OrderBumpWithVariants).hasVariants ? 'Choose Size' : 'Add +'}
                       </button>
                     </div>
                   ))}
@@ -369,7 +485,7 @@ const Cart: React.FC<CartProps> = ({ isOpen, onClose }) => {
           {/* Footer melhorado */}
           {items.length > 0 && (
             <div className="border-t border-gray-200 bg-white">
-              <div className="p-4 space-y-4">
+              <div className="p-4 pb-15 space-y-4 bg-gray-100">
                 {/* Total */}
                 <div className="flex justify-between items-center py-2 border-t border-gray-100">
                   <span className="text-lg font-bold text-gray-900">
@@ -407,6 +523,19 @@ const Cart: React.FC<CartProps> = ({ isOpen, onClose }) => {
           )}
         </div>
       </div>
+      
+      {/* Modal de seleção de tamanho */}
+      {selectedOrderBump && (
+        <OrderBumpSizeModal
+          isOpen={sizeModalOpen}
+          onClose={() => {
+            setSizeModalOpen(false)
+            setSelectedOrderBump(null)
+          }}
+          orderBump={selectedOrderBump as any}
+          onAddToCart={handleSizeModalAddToCart}
+        />
+      )}
     </div>
   )
 }

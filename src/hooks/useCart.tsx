@@ -9,6 +9,7 @@ interface CartItem {
   size: string
   color?: string
   price: number
+  originalPrice?: number
   quantity: number
   image: string
   shopifyUrl: string
@@ -98,7 +99,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     const cartItems = items.map(item => `${item.variantId}:${item.quantity}`).join(',')
     const checkoutUrl = `${shopifyBaseUrl}${cartItems}?channel=buy_button`
 
-    // Trigger Meta Pixel event
+    // Trigger Meta Pixel e TikTok events
     if (typeof window !== 'undefined' && window.fbq) {
       // Detectar tipo de produto no carrinho
       const hasWWEProducts = items.some(item => 
@@ -119,6 +120,55 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         value: totalPrice,
         currency: currency,
         num_items: totalItems
+      })
+    }
+
+    // Trigger TikTok event
+    if (typeof window !== 'undefined' && window.ttq) {
+      // Detectar tipo de produto no carrinho
+      const hasWWEProducts = items.some(item => 
+        item.productName.includes('John Cena') || 
+        item.productName.includes('Cody Rhodes') ||
+        item.variantId.startsWith('50882')
+      )
+      
+      const hasJohnCenaProducts = items.some(item => 
+        item.productName.includes('John Cena') ||
+        item.variantId.startsWith('50882187')
+      )
+      
+      const hasCodyRhodesProducts = items.some(item =>
+        item.productName.includes('Cody Rhodes') ||
+        item.variantId.startsWith('50882326')
+      )
+      
+      const currency = hasWWEProducts ? 'USD' : 'EUR'
+      const contentName = hasWWEProducts ? 'WWE Cart Checkout' : 'TDF Cart Checkout'
+      
+      // Determinar nome do evento baseado no lutador
+      let eventName = 'InitiateCheckout'
+      if (hasJohnCenaProducts) {
+        eventName = 'John_Cena_InitiateCheckout'
+      } else if (hasCodyRhodesProducts) {
+        eventName = 'Cody_Rhodes_InitiateCheckout'
+      } else if (hasWWEProducts) {
+        eventName = 'WWE_InitiateCheckout'
+      } else {
+        eventName = 'TDF_InitiateCheckout'
+      }
+
+      window.ttq.track(eventName, {
+        content_name: contentName,
+        content_type: 'product',
+        value: totalPrice,
+        currency: currency,
+        quantity: totalItems,
+        contents: items.map(item => ({
+          content_id: item.variantId,
+          content_name: item.productName,
+          quantity: item.quantity,
+          price: item.price
+        }))
       })
     }
 

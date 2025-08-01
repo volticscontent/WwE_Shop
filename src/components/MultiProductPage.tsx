@@ -114,7 +114,7 @@ const MultiProductPage = () => {
     const variant = jersey.variants.find(v => v.size === selectedSize)
     if (!variant) return
 
-    // Trigger Meta Pixel InitiateCheckout event
+    // Trigger Meta Pixel e TikTok InitiateCheckout events
     if (typeof window !== 'undefined' && window.fbq) {
       window.fbq('track', 'InitiateCheckout', {
         content_name: jersey.name,
@@ -123,6 +123,18 @@ const MultiProductPage = () => {
         value: 47,
         currency: 'EUR',
         num_items: 1
+      })
+    }
+
+    // Trigger TikTok event
+    if (typeof window !== 'undefined' && window.ttq) {
+      window.ttq.track('InitiateCheckout', {
+        content_name: jersey.name,
+        content_id: variant.variantId,
+        content_type: 'product',
+        value: 47,
+        currency: 'EUR',
+        quantity: 1
       })
     }
 

@@ -17,6 +17,13 @@ export interface WWEOrderBump {
   variantId: string;
   shopifyUrl: string;
   category: 'accessories' | 'bundle';
+  hasVariants?: boolean;
+  variants?: Array<{
+    size: string;
+    variantId: string;
+    shopifyUrl: string;
+  }>;
+  images?: string[];
 }
 
 export interface WWEProductInfo extends ProductInfo {

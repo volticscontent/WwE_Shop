@@ -43,6 +43,7 @@ const WWEProductInfo: React.FC<WWEProductInfoProps> = ({
     if (!sizeVariant) return
 
     const productPrice = parseFloat(product.pricing.discount_price.replace(/[^0-9.,]/g, ''))
+    const originalPrice = parseFloat(product.pricing.regular_price.replace(/[^0-9.,]/g, ''))
 
     addItem({
       variantId: sizeVariant.variantId,
@@ -50,12 +51,13 @@ const WWEProductInfo: React.FC<WWEProductInfoProps> = ({
       variantName: variant.name,
       size: selectedSize,
       price: productPrice,
+      originalPrice: originalPrice,
       quantity: quantity,
       image: variant.image,
       shopifyUrl: sizeVariant.shopifyUrl
     })
 
-    // Trigger Meta Pixel event
+    // Trigger Meta Pixel e TikTok events
     if (typeof window !== 'undefined' && window.fbq) {
       window.fbq('track', 'WWE_AddToCart', {
         content_name: `WWE: ${product.title}`,
@@ -64,6 +66,23 @@ const WWEProductInfo: React.FC<WWEProductInfoProps> = ({
         value: productPrice * quantity,
         currency: 'USD',
         num_items: quantity
+      })
+    }
+
+    // Trigger TikTok event
+    if (typeof window !== 'undefined' && window.ttq) {
+      // Detectar lutador pelo título do produto
+      const wrestlerName = product.title.includes('John Cena') ? 'John_Cena' : 
+                          product.title.includes('Cody Rhodes') ? 'Cody_Rhodes' : 'WWE'
+      const eventName = `${wrestlerName}_AddToCart`
+      
+      window.ttq.track(eventName, {
+        content_name: `WWE: ${product.title}`,
+        content_id: sizeVariant.variantId,
+        content_type: 'product',
+        value: productPrice * quantity,
+        currency: 'USD',
+        quantity: quantity
       })
     }
 
@@ -106,10 +125,10 @@ const WWEProductInfo: React.FC<WWEProductInfoProps> = ({
                 <span className="size-selector-value text-gray-600">{selectedSize}</span>
               )}
             </div>
-            <div className="size-chart">
+            <div className="size-chart mb-10">
               <button 
                 onClick={() => setShowSizeChart(true)}
-                className="size-chart-link text-blue-600 hover:text-blue-800 underline text-sm"
+                className="size-chart-link text-gray-600 hover:text-gray-800 underline text-sm"
               >
                 SIZE CHART
               </button>

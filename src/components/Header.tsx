@@ -24,7 +24,7 @@ const Header = () => {
                 {/* Logo */}
                 <div className="logo">
                   <div aria-label="WWE Shop">
-                    <div className="w-20 h-20 flex items-center justify-center">
+                    <div className="w-18 h-18 flex items-center justify-center">
                       <Image 
                         src="/logo.svg" 
                         alt="WWE Shop" 

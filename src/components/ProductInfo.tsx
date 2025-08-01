@@ -59,6 +59,9 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product, onVariantChange, sel
 
     // Ensure quantity is at least 1
     const finalQuantity = Math.max(1, quantity)
+    
+    const discountPrice = parseFloat(product.pricing.discount_price.replace(/[^0-9.,]/g, '').replace(',', '.'))
+    const originalPrice = parseFloat(product.pricing.regular_price.replace(/[^0-9.,]/g, '').replace(',', '.'))
 
     // Add to cart
     addItem({
@@ -67,21 +70,34 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product, onVariantChange, sel
       variantName: variant.name,
       size: selectedSize,
       color: variant.color,
-      price: parseFloat(product.pricing.discount_price.replace(/[^0-9.,]/g, '').replace(',', '.')),
+      price: discountPrice,
+      originalPrice: originalPrice,
       quantity: finalQuantity,
       image: variant.image,
       shopifyUrl: shopifyVariant.shopifyUrl
     })
 
-    // Trigger Meta Pixel event
+    // Trigger Meta Pixel e TikTok events
     if (typeof window !== 'undefined' && window.fbq) {
       window.fbq('track', 'TDF_AddToCart', {
         content_name: `TDF: ${product.title}`,
         content_ids: [shopifyVariant.variantId],
         content_type: 'tdf_variant',
-        value: parseFloat(product.pricing.discount_price.replace(/[^0-9.,]/g, '').replace(',', '.')) * finalQuantity,
+        value: discountPrice * finalQuantity,
         currency: 'EUR',
         num_items: finalQuantity
+      })
+    }
+
+    // Trigger TikTok event
+    if (typeof window !== 'undefined' && window.ttq) {
+      window.ttq.track('AddToCart', {
+        content_name: `TDF: ${product.title}`,
+        content_id: shopifyVariant.variantId,
+        content_type: 'product',
+        value: discountPrice * finalQuantity,
+        currency: 'EUR',
+        quantity: finalQuantity
       })
     }
 

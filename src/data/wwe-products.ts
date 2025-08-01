@@ -6,7 +6,7 @@ export const johnCenaKit: WWEProductInfo = {
   product_id: "john-cena-kit-001",
   description: "Celebrate John Cena's legendary WWE career with this exclusive 3-shirt collection. This limited edition GOAT Farewell Kit features official SummerSlam designs in Blue, Green, and Black colorways. Each shirt represents a piece of wrestling history as we honor the 16-time World Champion's incredible journey.",
   pricing: {
-    regular_price: "$149.99",
+    regular_price: "$110,99",
     discount_price: "$49.99",
     discount_code: "FAREWELL2025"
   },
@@ -109,8 +109,8 @@ export const codyRhodesKit: WWEProductInfo = {
   product_id: "cody-rhodes-kit-001",
   description: "Complete your American Nightmare collection with this exclusive Cody Rhodes kit. Features his signature Full-Zip Jacket, premium shirt, and adjustable cap with the iconic Americana skull design. Perfect for fans who want to 'Finish The Story' in style.",
   pricing: {
-    regular_price: "$149.90",
-    discount_price: "$49.99",
+    regular_price: "164.97",
+    discount_price: "$59.90",
     discount_code: "FINISHTHESTORY"
   },
   availability: "In Stock - Collector's Edition",
@@ -125,8 +125,8 @@ export const codyRhodesKit: WWEProductInfo = {
       type: "main"
     },
     {
-      url: "/public/Men's-White-Cody-Rhodes-American-Nightmare-Full-Zi/Men's-White-Cody-Rhodes-American-Nightmare-Full-Zi-01.jpg",
-      alt_text: "Cody Rhodes American Nightmare Full-Zip Jacket - Main Item",
+      url: "/public/Men's-White-Cody-Rhodes-Stars-and-Stripes-Windbrea/Men's-White-Cody-Rhodes-Stars-and-Stripes-Windbrea-02.jpg",
+      alt_text: "Cody Rhodes Stars & Stripes Nightmare Shirt - Angle 2",
       type: "thumbnail_2"
     },
     {
@@ -171,25 +171,46 @@ export const codyRhodesKit: WWEProductInfo = {
       id: "cody-rhodes-mini-backpack",
       name: "Loungefly Cody Rhodes American Nightmare Mini Backpack",
       description: "Premium mini backpack featuring Cody Rhodes American Nightmare design. Perfect for collectors and everyday use.",
-      price: 49.49,
+      price: 47.49,
       originalPrice: 119.90,
       discount: "25% OFF",
       image: "/public/Loungefly-Cody-Rhodes-American-Nightmare-Mini-Back/Loungefly-Cody-Rhodes-American-Nightmare-Mini-Back-01.jpg",
       variantId: "50882338685240",
       shopifyUrl: "https://nkgzhm-1d.myshopify.com/cart/50882338685240:1?channel=buy_button",
-      category: "accessories"
+      category: "accessories",
+      images: [
+        "/public/Men's-White-Cody-Rhodes-American-Nightmare-Full-Zi/Men's-White-Cody-Rhodes-American-Nightmare-Full-Zi-01.jpg",
+        "/public/Loungefly-Cody-Rhodes-American-Nightmare-Mini-Back/Loungefly-Cody-Rhodes-American-Nightmare-Mini-Back-01.jpg",
+        "/public/Loungefly-Cody-Rhodes-American-Nightmare-Mini-Back/Loungefly-Cody-Rhodes-American-Nightmare-Mini-Back-02.jpg",
+        "/public/Loungefly-Cody-Rhodes-American-Nightmare-Mini-Back/Loungefly-Cody-Rhodes-American-Nightmare-Mini-Back-03.jpg"
+      ]
     },
     {
       id: "cody-rhodes-windbreaker-jacket",
       name: "Men's White Cody Rhodes American Nightmare Full-Zip Windbreaker Jacket",
       description: "Premium windbreaker jacket featuring Cody Rhodes American Nightmare design. Perfect for any weather.",
-      price: 49.99,
-      originalPrice: 149.99,
+      price: 49.90,
+      originalPrice: 110.99,
       discount: "27% OFF",
-      image: "/public/Men's-White-Cody-Rhodes-Stars-and-Stripes-Windbrea/Men's-White-Cody-Rhodes-Stars-and-Stripes-Windbrea-01.jpg",
+      image: "/public/Men's-White-Cody-Rhodes-American-Nightmare-Full-Zi/Men's-White-Cody-Rhodes-American-Nightmare-Full-Zi-01.jpg",
       variantId: "50882351333688",
       shopifyUrl: "https://nkgzhm-1d.myshopify.com/cart/50882351333688:1?channel=buy_button",
-      category: "accessories"
+      category: "accessories",
+      hasVariants: true,
+      variants: [
+        { size: "S", variantId: "50882351333688", shopifyUrl: "https://nkgzhm-1d.myshopify.com/cart/50882351333688:1?channel=buy_button" },
+        { size: "M", variantId: "50882351366456", shopifyUrl: "https://nkgzhm-1d.myshopify.com/cart/50882351366456:1?channel=buy_button" },
+        { size: "L", variantId: "50882351399224", shopifyUrl: "https://nkgzhm-1d.myshopify.com/cart/50882351399224:1?channel=buy_button" },
+        { size: "XL", variantId: "50882351431992", shopifyUrl: "https://nkgzhm-1d.myshopify.com/cart/50882351431992:1?channel=buy_button" },
+        { size: "2XL", variantId: "50882351464760", shopifyUrl: "https://nkgzhm-1d.myshopify.com/cart/50882351464760:1?channel=buy_button" },
+        { size: "3XL", variantId: "50882351497528", shopifyUrl: "https://nkgzhm-1d.myshopify.com/cart/50882351497528:1?channel=buy_button" }
+      ],
+      images: [
+        "/public/Men's-White-Cody-Rhodes-American-Nightmare-Full-Zi/Men's-White-Cody-Rhodes-American-Nightmare-Full-Zi-01.jpg",
+        "/public/Men's-White-Cody-Rhodes-American-Nightmare-Full-Zi/Men's-White-Cody-Rhodes-American-Nightmare-Full-Zi-02.jpg",
+        "/public/Men's-White-Cody-Rhodes-American-Nightmare-Full-Zi/Men's-White-Cody-Rhodes-American-Nightmare-Full-Zi-03.jpg",
+        "/public/Men's-White-Cody-Rhodes-American-Nightmare-Full-Zi/Men's-White-Cody-Rhodes-American-Nightmare-Full-Zi-04.jpg"
+      ]
     },
     {
       id: "cody-rhodes-stainless-steel-can",
@@ -201,7 +222,12 @@ export const codyRhodesKit: WWEProductInfo = {
       image: "/public/IGLOO-Cody-Rhodes-16oz.-Stainless-Steel-Can/IGLOO-Cody-Rhodes-16oz.-Stainless-Steel-Can-01.jpg",
       variantId: "50882365030712",
       shopifyUrl: "https://nkgzhm-1d.myshopify.com/cart/50882365030712:1?channel=buy_button",
-      category: "accessories"
+      category: "accessories",
+      images: [
+        "/public/IGLOO-Cody-Rhodes-16oz.-Stainless-Steel-Can/IGLOO-Cody-Rhodes-16oz.-Stainless-Steel-Can-01.jpg",
+        "/public/IGLOO-Cody-Rhodes-16oz.-Stainless-Steel-Can/IGLOO-Cody-Rhodes-16oz.-Stainless-Steel-Can-02.jpg",
+        "/public/IGLOO-Cody-Rhodes-16oz.-Stainless-Steel-Can/IGLOO-Cody-Rhodes-16oz.-Stainless-Steel-Can-03.jpg"
+      ]
     }
   ]
 }
