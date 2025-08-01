@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect, useMemo } from 'react'
+import React, { useState, useMemo } from 'react'
 import Image from 'next/image'
 import { WWEProductInfo, WWEOrderBump } from '@/types/wwe-product'
 import { useCart } from '@/hooks/useCart'
@@ -9,7 +9,7 @@ import OrderBumpSizeModal from './OrderBumpSizeModal'
 interface WWEOrderBumpsProps {
   product: WWEProductInfo
   onOpenCart: () => void
-  onOrderBumpSelectionChange: (selection: {
+  onOrderBumpSelectionChange?: (selection: {
     selectedOrderBumps: string[]
     totalPrice: number
   }) => void
@@ -17,8 +17,7 @@ interface WWEOrderBumpsProps {
 
 const WWEOrderBumps: React.FC<WWEOrderBumpsProps> = ({
   product,
-  onOpenCart,
-  onOrderBumpSelectionChange
+  onOpenCart
 }) => {
   const [sizeModalOpen, setSizeModalOpen] = useState(false)
   const [selectedOrderBump, setSelectedOrderBump] = useState<WWEOrderBump | null>(null)

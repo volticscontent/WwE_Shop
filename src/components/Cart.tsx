@@ -532,7 +532,7 @@ const Cart: React.FC<CartProps> = ({ isOpen, onClose }) => {
             setSizeModalOpen(false)
             setSelectedOrderBump(null)
           }}
-          orderBump={selectedOrderBump as any}
+          orderBump={selectedOrderBump as unknown as import('@/types/wwe-product').WWEOrderBump}
           onAddToCart={handleSizeModalAddToCart}
         />
       )}
